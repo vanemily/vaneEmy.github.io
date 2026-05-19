@@ -306,14 +306,25 @@
       position: fixed;
       top: 1rem; left: 1rem;
       z-index: 400;
-      background: white;
+      background: rgba(255,255,255,0.92);
       border: 1.5px solid var(--lavender);
       border-radius: 8px;
-      padding: 6px 10px;
-      cursor: auto;
+      padding: 5px 9px;
+      cursor: pointer;
       font-size: 1rem;
       box-shadow: 2px 2px 8px rgba(0,0,0,0.08);
     }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      background: rgba(0,0,0,0.25);
+      backdrop-filter: blur(2px);
+    }
+
+    .sidebar-overlay.active { display: block; }
 
     /* ════════════════════════════════════════════════
        MAIN CONTENT
@@ -1224,7 +1235,7 @@
 
       .sidebar.open { transform: translateX(0); }
 
-      .hamburger { display: block; top: calc(var(--banner-h) + 0.5rem); }
+      .hamburger { display: flex; align-items: center; justify-content: center; top: calc((var(--banner-h) - 32px) / 2); left: 0.8rem; }
 
       .site-banner { padding: 0 1rem 0 3.5rem; }
       .banner-sep, .banner-deco-right, .banner-pills, .banner-sub { display: none; }
@@ -1318,6 +1329,7 @@
 
   <!-- hamburger móvil -->
   <button class="hamburger" id="hamburger" aria-label="Menú">☰</button>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
   <!-- ════════════════════════════════════════════════
        MAIN
@@ -1737,12 +1749,15 @@
     // ── Hamburger (móvil) ─────────────────────────────
     const sidebar   = document.getElementById('sidebar');
     const hamburger = document.getElementById('hamburger');
+    const overlay   = document.getElementById('sidebar-overlay');
 
-    hamburger.addEventListener('click', () => sidebar.classList.toggle('open'));
+    function openSidebar()  { sidebar.classList.add('open');    overlay.classList.add('active');    hamburger.textContent = '✕'; }
+    function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); hamburger.textContent = '☰'; }
 
-    sidebar.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => sidebar.classList.remove('open'));
-    });
+    hamburger.addEventListener('click', () => sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
+    overlay.addEventListener('click', closeSidebar);
+
+    sidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', closeSidebar));
   </script>
 
   <script>
