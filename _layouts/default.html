@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  {% include head.html %}
+</head>
+<body>
+
+  {% include banner.html %}
+  {% include sidebar.html %}
+
+  <div class="main-wrap">
+
+    {{ content }}
+
+    {% include footer.html %}
+
+  </div><!-- /main-wrap -->
+
+  {% include scripts.html %}
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+title: Vanessa Emily
+description: "El mundo de Vanessa Emily — extrañezas, rarezas y curiosidades"
+url: "https://vanemy.me"
+lang: es
+
+markdown: kramdown
+kramdown:
+  input: GFM
+
+permalink: /blog/:title/
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+      type: "drafts"
+    values:
+      layout: "post"
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - README.md

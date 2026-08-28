@@ -1,0 +1,28 @@
+---
+title: Memorias
+---
+<section class="room room-compact room-blog" id="blog">
+  <div class="room-inner">
+    <span class="room-label reveal">páginas sueltas</span>
+    <h2 class="room-title reveal"><em>Memorias</em></h2>
+    <p class="room-text reveal">Palabras, aprendizajes y apuntes de los mundos que voy explorando.</p>
+
+    {% if site.posts.size > 0 %}
+    <div class="blog-list">
+      {% for post in site.posts %}
+      <article class="blog-entry reveal">
+        <span class="entry-date">{% include fecha-es.html fecha=post.date %}</span>
+        <a class="entry-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        <p class="entry-excerpt">{{ post.excerpt | strip_html | truncate: 160 }}</p>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="blog-coming reveal">
+      <span class="bc-icon">📝</span>
+      <p>las páginas están tomando forma</p>
+      <small>próximamente · muy pronto · ya casi</small>
+    </div>
+    {% endif %}
+  </div>
+</section>
