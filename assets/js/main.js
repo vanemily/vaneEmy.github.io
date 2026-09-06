@@ -186,12 +186,15 @@ function formatBlockDate(iso) {
   const channelUrl = grid.dataset.arenaUrl || `https://www.are.na/${channel}`;
 
   function emptyState(icon, textEs, textEn, hintEs, hintEn) {
+    // hintEs/hintEn a veces traen HTML con comillas (ej. un <a href="...">),
+    // así que hay que escaparlas para que no rompan los atributos data-*.
+    const esc = s => s.replace(/"/g, '&quot;');
     const lang = currentLang();
     grid.innerHTML = `
       <div class="coming-soon-box arena-loading" style="grid-column:1/-1;">
         <span class="cs-icon">${icon}</span>
-        <p class="i18n" data-es="${textEs}" data-en="${textEn}">${lang === 'en' ? textEn : textEs}</p>
-        <small class="i18n" data-es="${hintEs}" data-en="${hintEn}">${lang === 'en' ? hintEn : hintEs}</small>
+        <p class="i18n" data-es="${esc(textEs)}" data-en="${esc(textEn)}">${lang === 'en' ? textEn : textEs}</p>
+        <small class="i18n" data-es="${esc(hintEs)}" data-en="${esc(hintEn)}">${lang === 'en' ? hintEn : hintEs}</small>
       </div>`;
   }
 
@@ -259,9 +262,7 @@ function formatBlockDate(iso) {
       grid.innerHTML = data.map(blockToCard).join('');
     })
     .catch(() => {
-      const linkEs = `<a href="${channelUrl}" target="_blank" rel="noopener">verla directo en Are.na</a>`;
-      const linkEn = `<a href="${channelUrl}" target="_blank" rel="noopener">see it directly on Are.na</a>`;
-      emptyState('🔭', 'no se pudo cargar la vitrina ahora mismo', 'couldn\'t load this right now', linkEs, linkEn);
+      emptyState('🔭', 'no se pudo cargar la vitrina ahora mismo', 'couldn\'t load this right now', 'vuelve pronto', 'come back soon');
     });
 })();
 
