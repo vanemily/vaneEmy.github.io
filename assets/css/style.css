@@ -425,6 +425,13 @@ body {
     linear-gradient(155deg, #F5E0EE 0%, #E0F0E8 100%);
 }
 
+.room-delirios {
+  background:
+    radial-gradient(ellipse at 78% 20%, rgba(245,239,160,0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 18% 78%, rgba(235,185,215,0.15) 0%, transparent 50%),
+    linear-gradient(160deg, #EFF5D8 0%, #F8E8F0 100%);
+}
+
 /* ── Coming soon box ── */
 .coming-soon-box {
   margin-top: 1.4rem;
