@@ -8,6 +8,20 @@ layout: default
     <p class="room-text reveal" style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;color:var(--text-light);text-transform:uppercase;margin-top:-1rem;">
       {% include fecha-es.html fecha=page.date %}
     </p>
+    {% if page.tags and page.tags.size > 0 %}
+    <div class="post-tags reveal">
+      {% for tag in page.tags %}
+        {% case tag %}
+          {% when 'extranos-delirios-de-jengibre' %}
+            <a class="tag-pill" href="{{ '/extranos-delirios-de-jengibre/' | relative_url }}">{{ tag | replace: '_', ' ' }}</a>
+          {% when 'corazon-entretejido' %}
+            <a class="tag-pill" href="{{ '/corazon-entretejido/' | relative_url }}">{{ tag | replace: '_', ' ' }}</a>
+          {% else %}
+            <a class="tag-pill" href="{{ '/blog/tag/' | relative_url }}?t={{ tag | uri_escape }}">{{ tag | replace: '_', ' ' }}</a>
+        {% endcase %}
+      {% endfor %}
+    </div>
+    {% endif %}
     <div class="post-content reveal">
       {{ content }}
     </div>

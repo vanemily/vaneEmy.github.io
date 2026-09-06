@@ -1,0 +1,32 @@
+---
+title: Extraños delirios de jengibre
+---
+<section class="room room-compact room-vitrina" id="vitrina">
+  <div class="room-inner">
+    <span class="room-label reveal">un pequeño archivo</span>
+    <h2 class="room-title reveal">Extraños delirios de <em>jengibre</em></h2>
+    <a class="listen-btn reveal" href="https://music.youtube.com/playlist?list=OLAK5uy_m8zg_5YABGPKQNkIv_Pl--xUtD4YXJEFE" target="_blank" rel="noopener">🎧 escuchar el álbum</a>
+    <div
+      class="arena-grid reveal"
+      id="arena-grid"
+      data-arena-channel="extranos-delirios-de-gengibre"
+      data-arena-url="https://www.are.na/vane-emy-xselfrzidfa/extranos-delirios-de-gengibre"
+    >
+      <div class="arena-loading">cargando curiosidades…</div>
+    </div>
+
+    {% assign related = site.tags["extranos-delirios-de-jengibre"] %}
+    {% if related and related.size > 0 %}
+    <span class="room-label reveal" style="margin-top:2rem;">memorias de este proyecto</span>
+    <div class="blog-list">
+      {% for post in related %}
+      <article class="blog-entry reveal">
+        <span class="entry-date">{% include fecha-es.html fecha=post.date %}</span>
+        <a class="entry-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        <p class="entry-excerpt">{{ post.excerpt | strip_html | truncate: 160 }}</p>
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>

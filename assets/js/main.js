@@ -43,26 +43,6 @@
   });
 })();
 
-// ── Mushroom (solo en "cómo voy creciendo") ──────
-(function () {
-  const mushroomBig = document.getElementById('mushroom-big');
-  const mushroomSmall = document.getElementById('mushroom-small');
-  const proceso = document.getElementById('proceso');
-  if (!mushroomBig || !mushroomSmall || !proceso) return;
-
-  new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        setTimeout(() => mushroomBig.classList.add('grown'), 200);
-        setTimeout(() => mushroomSmall.classList.add('grown'), 400);
-      } else {
-        mushroomBig.classList.remove('grown');
-        mushroomSmall.classList.remove('grown');
-      }
-    });
-  }, { threshold: 0.3 }).observe(proceso);
-})();
-
 // ── Scroll reveal ─────────────────────────────────
 (function () {
   const io = new IntersectionObserver(entries => {
@@ -243,4 +223,122 @@
     .catch(() => {
       emptyState('🔭', 'no se pudo cargar la vitrina ahora mismo', `<a href="${channelUrl}" target="_blank" rel="noopener">verla directo en Are.na</a>`);
     });
+})();
+
+// ── Wiki-links estilo Obsidian: [[Título]] dentro de una memoria ──
+(function () {
+  const container = document.querySelector('.post-content');
+  const indexEl = document.getElementById('wiki-index');
+  if (!container || !indexEl) return;
+
+  let items;
+  try {
+    items = JSON.parse(indexEl.textContent);
+  } catch (e) {
+    return;
+  }
+
+  const norm = s => s.trim().toLowerCase();
+  const byTitle = new Map();
+  items.forEach(({ title, url }) => {
+    if (title) byTitle.set(norm(title), url);
+  });
+
+  const WIKI_LINK = /\[\[(.+?)\]\]/g;
+
+  function linkify(text) {
+    const frag = document.createDocumentFragment();
+    let lastIndex = 0;
+    let match;
+
+    WIKI_LINK.lastIndex = 0;
+    while ((match = WIKI_LINK.exec(text))) {
+      if (match.index > lastIndex) {
+        frag.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+      }
+
+      const [target, alias] = match[1].split('::').map(s => s.trim());
+      const url = byTitle.get(norm(target));
+
+      if (url) {
+        const a = document.createElement('a');
+        a.className = 'wiki-link';
+        a.href = url;
+        a.textContent = alias || target;
+        frag.appendChild(a);
+      } else {
+        const span = document.createElement('span');
+        span.className = 'wiki-link wiki-link-missing';
+        span.title = 'todavía no existe esta página';
+        span.textContent = alias || target;
+        frag.appendChild(span);
+      }
+
+      lastIndex = WIKI_LINK.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+    }
+    return frag;
+  }
+
+  function walk(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      if (WIKI_LINK.test(node.nodeValue)) {
+        node.parentNode.replaceChild(linkify(node.nodeValue), node);
+      }
+      return;
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    if (node.tagName === 'A' || node.tagName === 'SCRIPT' || node.tagName === 'STYLE') return;
+    Array.from(node.childNodes).forEach(walk);
+  }
+
+  walk(container);
+})();
+
+// ── Memorias por tag (/blog/tag/?t=...) ──────────
+(function () {
+  const results = document.getElementById('tag-results');
+  const titleEl = document.getElementById('tag-title');
+  const dataEl = document.getElementById('posts-data');
+  if (!results || !titleEl || !dataEl) return;
+
+  let posts = [];
+  try {
+    posts = JSON.parse(dataEl.textContent);
+  } catch (e) {
+    posts = [];
+  }
+
+  function fechaEs(iso) {
+    const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    const [y, m, d] = iso.split('-').map(Number);
+    return `${d} de ${meses[m - 1]} de ${y}`;
+  }
+
+  const tag = new URLSearchParams(window.location.search).get('t');
+
+  if (!tag) {
+    results.innerHTML = '<div class="blog-coming reveal"><span class="bc-icon">🔎</span><p>no se especificó ningún tag</p></div>';
+    return;
+  }
+
+  titleEl.innerHTML = `Memorias con <em>${tag.replace(/_/g, ' ')}</em>`;
+
+  const matches = posts.filter(p => Array.isArray(p.tags) && p.tags.includes(tag));
+
+  if (matches.length === 0) {
+    results.innerHTML = '<div class="blog-coming reveal"><span class="bc-icon">🔎</span><p>todavía no hay memorias con este tag</p></div>';
+    return;
+  }
+
+  results.innerHTML = matches.map(post => `
+    <article class="blog-entry reveal">
+      <span class="entry-date">${fechaEs(post.date)}</span>
+      <a class="entry-title" href="${post.url}">${post.title}</a>
+      <p class="entry-excerpt">${post.excerpt}</p>
+    </article>
+  `).join('');
 })();
