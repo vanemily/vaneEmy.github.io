@@ -1120,7 +1120,7 @@ h2.room-title em { font-style: italic; color: var(--text-mid); }
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.arena-card:hover {
+a.arena-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 30px rgba(150,90,210,0.14);
 }
@@ -1152,6 +1152,36 @@ h2.room-title em { font-style: italic; color: var(--text-mid); }
   text-transform: uppercase;
   color: var(--text-light);
   margin-bottom: 0.3rem;
+}
+
+/* Bloques de puro texto: a todo el ancho, en prosa legible en vez de
+   apretados en una columna de foto. */
+.arena-card.arena-card-full {
+  grid-column: 1 / -1;
+}
+
+.arena-card-full .arena-card-body {
+  padding: 1.4rem 1.6rem;
+}
+
+.arena-card-full .arena-card-title {
+  font-family: 'Crimson Text', serif;
+  font-style: normal;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-mid);
+}
+
+.arena-card-full .arena-card-title p { margin-bottom: 0.9rem; }
+.arena-card-full .arena-card-title p:last-child { margin-bottom: 0; }
+
+.arena-card-date {
+  margin-top: 0.8rem;
+  text-align: right;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  color: var(--text-light);
 }
 
 /* ════════════════════════════════════════════════

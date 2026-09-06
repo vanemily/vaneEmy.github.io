@@ -7,6 +7,21 @@ function currentLang() {
   }
 }
 
+// ── Formatea una fecha (ISO) en el idioma actual ─────
+function formatBlockDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d)) return '';
+
+  if (currentLang() === 'en') {
+    const meses = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return `${meses[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  }
+
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+}
+
 // ── Typewriter (solo en la portada) ──────────────
 (function () {
   const target = document.getElementById('typewriter-target');
@@ -191,23 +206,42 @@ function currentLang() {
       block?.attachment?.url ||
       null;
 
-    const href =
-      block?.source?.url ||
-      block?._links?.self?.href ||
-      `${channelUrl}/blocks/${block.id || ''}`;
+    // block?._links?.self?.href apunta al endpoint de la API (JSON, no una
+    // página) — si el bloque no es un link en sí, mejor mandar al canal.
+    const href = block?.source?.url || channelUrl;
 
-    const text = (block?.content?.plain || block?.description?.plain || '').trim();
+    const textHtml = block?.content?.html || '';
+    const textPlain = (block?.content?.plain || block?.description?.plain || '').trim();
 
     const media = image
       ? `<img src="${image}" alt="${title.replace(/"/g, '&quot;')}" loading="lazy">`
       : '';
 
-    const body = title || text
-      ? `<div class="arena-card-body">
-           <span class="arena-card-kind">${kind}</span>
-           <p class="arena-card-title">${title || text.slice(0, 90)}</p>
-         </div>`
-      : '';
+    // Bloque de puro texto (sin imagen ni título): se muestra completo,
+    // con sus párrafos, y a todo el ancho de la vitrina para que se lea bien.
+    const isFullText = !image && !title && textHtml;
+
+    let body = '';
+    if (title || textPlain) {
+      const content = title ? title : (isFullText ? textHtml : textPlain);
+      body = `<div class="arena-card-body">
+                <span class="arena-card-kind">${kind}</span>
+                <div class="arena-card-title">${content}</div>
+              </div>`;
+    }
+
+    // Por ahora los bloques de puro texto no enlazan a nada (eso se
+    // decide después); el resto sí sigue llevando a su link/canal.
+    if (isFullText) {
+      const dateStr = formatBlockDate(block.created_at || block?.connection?.connected_at);
+      const dateHtml = dateStr ? `<p class="arena-card-date">${dateStr}</p>` : '';
+      body = `<div class="arena-card-body">
+                <span class="arena-card-kind">${kind}</span>
+                <div class="arena-card-title">${textHtml}</div>
+                ${dateHtml}
+              </div>`;
+      return `<div class="arena-card arena-card-full">${body}</div>`;
+    }
 
     return `<a class="arena-card" href="${href}" target="_blank" rel="noopener">${media}${body}</a>`;
   }
