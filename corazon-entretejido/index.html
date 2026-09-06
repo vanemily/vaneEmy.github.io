@@ -22,7 +22,7 @@ title: Corazón entretejido
       <article class="blog-entry reveal">
         <span class="entry-date">{% include fecha-es.html fecha=post.date %}</span>
         <a class="entry-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
-        <p class="entry-excerpt">{{ post.excerpt | strip_html | truncate: 160 }}</p>
+        <p class="entry-excerpt">{{ post.excerpt | strip_html | split: '.' | first | append: '.' }}</p>
       </article>
       {% endfor %}
     </div>
