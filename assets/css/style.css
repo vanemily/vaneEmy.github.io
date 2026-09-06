@@ -1182,6 +1182,7 @@ h2.room-title em { font-style: italic; color: var(--text-mid); }
 }
 
 .chip-icon { font-size: 1.3rem; line-height: 1; }
+.chip-icon svg { width: 1.3rem; height: 1.3rem; display: block; color: var(--text-dark); }
 .chip-name {
   font-family: 'Space Mono', monospace;
   font-size: 0.46rem;
