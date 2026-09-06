@@ -3,9 +3,9 @@ title: Memorias
 ---
 <section class="room room-compact room-blog" id="blog">
   <div class="room-inner">
-    <span class="room-label reveal">páginas sueltas</span>
-    <h2 class="room-title reveal"><em>Memorias</em></h2>
-    <p class="room-text reveal">Palabras, aprendizajes y apuntes de los mundos que voy explorando.</p>
+    <span class="room-label reveal i18n" data-en="loose pages">páginas sueltas</span>
+    <h2 class="room-title reveal i18n" data-en="<em>Memories</em>"><em>Memorias</em></h2>
+    <p class="room-text reveal i18n" data-en="Words, learnings, and notes from the worlds I'm exploring.">Palabras, aprendizajes y apuntes de los mundos que voy explorando.</p>
 
     {% if site.posts.size > 0 %}
     <div class="blog-list">
@@ -20,8 +20,8 @@ title: Memorias
     {% else %}
     <div class="blog-coming reveal">
       <span class="bc-icon">📝</span>
-      <p>las páginas están tomando forma</p>
-      <small>próximamente · muy pronto · ya casi</small>
+      <p class="i18n" data-en="the pages are taking shape">las páginas están tomando forma</p>
+      <small class="i18n" data-en="coming soon · very soon · almost there">próximamente · muy pronto · ya casi</small>
     </div>
     {% endif %}
   </div>

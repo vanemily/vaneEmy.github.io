@@ -3,9 +3,9 @@ title: Extraños delirios de jengibre
 ---
 <section class="room room-compact room-vitrina" id="vitrina">
   <div class="room-inner">
-    <span class="room-label reveal">un pequeño archivo</span>
+    <span class="room-label reveal i18n" data-en="a small archive">un pequeño archivo</span>
     <h2 class="room-title reveal">Extraños delirios de <em>jengibre</em></h2>
-    <a class="listen-btn reveal" href="https://music.youtube.com/playlist?list=OLAK5uy_m8zg_5YABGPKQNkIv_Pl--xUtD4YXJEFE" target="_blank" rel="noopener">🎧 escuchar el álbum</a>
+    <a class="listen-btn reveal i18n" data-en="🎧 listen to the album" href="https://music.youtube.com/playlist?list=OLAK5uy_m8zg_5YABGPKQNkIv_Pl--xUtD4YXJEFE" target="_blank" rel="noopener">🎧 escuchar el álbum</a>
     <div
       class="arena-grid reveal"
       id="arena-grid"
@@ -17,7 +17,7 @@ title: Extraños delirios de jengibre
 
     {% assign related = site.tags["extranos-delirios-de-jengibre"] %}
     {% if related and related.size > 0 %}
-    <span class="room-label reveal" style="margin-top:2rem;">memorias de este proyecto</span>
+    <span class="room-label reveal i18n" data-en="memories from this project" style="margin-top:2rem;">memorias de este proyecto</span>
     <div class="blog-list">
       {% for post in related %}
       <article class="blog-entry reveal">

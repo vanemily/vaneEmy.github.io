@@ -105,11 +105,29 @@ body {
 .banner-pill:nth-child(2) { background: var(--pink);     color: #A03060; }
 .banner-pill:nth-child(3) { background: var(--mint);     color: #206050; }
 
-.banner-deco-right {
-  font-size: 1rem;
-  color: var(--text-light);
-  letter-spacing: 0.3em;
+.lang-toggle {
+  display: flex;
   flex-shrink: 0;
+  border: 1.5px solid rgba(160,120,210,0.25);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.lang-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  padding: 5px 11px;
+  border: none;
+  background: transparent;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.lang-btn.active {
+  background: var(--lavender);
+  color: #4020A0;
 }
 
 /* ════════════════════════════════════════════════
@@ -713,10 +731,6 @@ body {
   animation: rabbitFall 0.7s cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 
-#rabbit.rising {
-  animation: rabbitRise 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
 .hole {
   width: 52px; height: 16px;
   background: radial-gradient(ellipse, #1A0830 10%, #38106A 100%);
@@ -729,12 +743,6 @@ body {
   0%   { transform: translateY(0)    scale(1)    rotate(0deg);   opacity: 1; }
   40%  { transform: translateY(8px)  scale(0.9)  rotate(-15deg); opacity: 1; }
   100% { transform: translateY(28px) scale(0.1)  rotate(-40deg); opacity: 0; }
-}
-
-@keyframes rabbitRise {
-  0%   { transform: translateY(28px) scale(0.1) rotate(20deg);  opacity: 0; }
-  60%  { transform: translateY(-8px) scale(1.15) rotate(-5deg); opacity: 1; }
-  100% { transform: translateY(0)    scale(1)   rotate(0deg);   opacity: 1; }
 }
 
 /* ════════════════════════════════════════════════
@@ -1371,7 +1379,7 @@ footer p {
   .hamburger { display: flex; align-items: center; justify-content: center; top: calc((var(--banner-h) - 32px) / 2); left: 0.8rem; }
 
   .site-banner { padding: 0 1rem 0 3.5rem; }
-  .banner-sep, .banner-deco-right, .banner-pills, .banner-sub { display: none; }
+  .banner-sep, .banner-pills, .banner-sub { display: none; }
 
   .main-wrap { margin-left: 0; margin-top: var(--banner-h); padding: 1rem; }
 

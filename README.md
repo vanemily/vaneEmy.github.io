@@ -59,6 +59,18 @@ Dentro de una memoria puedes escribir:
 - `[[Título::alias]]` → mismo link, pero mostrando "alias" como texto. **Usa `::`, no `|`** — kramdown convierte cualquier línea con `|` en una tabla, incluso sin querer.
 - Si el título no existe todavía, se muestra subrayado punteado en vez de romperse (como Obsidian marca notas que faltan).
 
+## Switch de idioma (ES/EN)
+
+El botón ES/EN del banner cambia, en la misma página, cualquier texto marcado así:
+
+```html
+<span class="i18n" data-en="about me">sobre mí</span>
+```
+
+Si un elemento no tiene `data-en`, simplemente se queda en español al cambiar a inglés — no rompe nada. Así está pensado a propósito: por ahora el menú, botones y encabezados de sección ya tienen su versión en inglés, pero las memorias, las descripciones de los proyectos y los párrafos del hero se quedan en español hasta que se traduzcan a mano siguiendo el mismo patrón.
+
+Para textos con `<em>` u otro HTML adentro, el `data-en` también puede llevar HTML: `data-en="About <em>me</em>"`.
+
 ## Despliegue
 
 `git push origin master` publica directo en vanemy.me (GitHub Pages reconstruye con Jekyll automáticamente, 1-2 minutos).

@@ -1,3 +1,12 @@
+// ── Idioma actual (usado por cualquier contenido que se genera con JS) ──
+function currentLang() {
+  try {
+    return localStorage.getItem('site-lang') || 'es';
+  } catch (e) {
+    return 'es';
+  }
+}
+
 // ── Typewriter (solo en la portada) ──────────────
 (function () {
   const target = document.getElementById('typewriter-target');
@@ -16,7 +25,7 @@
   setTimeout(typeNext, 600);
 })();
 
-// ── Rabbit click → cae al hoyo (solo en la portada) ──
+// ── Rabbit click → cae al hoyo y sigue a "sobre mí" (solo en la portada) ──
 (function () {
   const rabbit = document.getElementById('rabbit');
   if (!rabbit) return;
@@ -27,18 +36,12 @@
     if (rabbitBusy) return;
     rabbitBusy = true;
 
-    rabbit.classList.remove('rising');
     rabbit.classList.add('falling');
 
     setTimeout(() => {
-      rabbit.classList.remove('falling');
-      rabbit.classList.add('rising');
-
-      setTimeout(() => {
-        rabbit.classList.remove('rising');
-        rabbit.style.animation = '';
-        rabbitBusy = false;
-      }, 600);
+      if (rabbit.dataset.href) {
+        window.location.href = rabbit.dataset.href;
+      }
     }, 900);
   });
 })();
@@ -167,12 +170,13 @@
   const channel = grid.dataset.arenaChannel;
   const channelUrl = grid.dataset.arenaUrl || `https://www.are.na/${channel}`;
 
-  function emptyState(icon, text, hint) {
+  function emptyState(icon, textEs, textEn, hintEs, hintEn) {
+    const lang = currentLang();
     grid.innerHTML = `
       <div class="coming-soon-box arena-loading" style="grid-column:1/-1;">
         <span class="cs-icon">${icon}</span>
-        <p>${text}</p>
-        <small>${hint}</small>
+        <p class="i18n" data-es="${textEs}" data-en="${textEn}">${lang === 'en' ? textEn : textEs}</p>
+        <small class="i18n" data-es="${hintEs}" data-en="${hintEn}">${lang === 'en' ? hintEn : hintEs}</small>
       </div>`;
   }
 
@@ -215,13 +219,15 @@
     })
     .then(({ data }) => {
       if (!data || data.length === 0) {
-        emptyState('🔭', 'todavía no hay nada aquí', 'vuelve pronto');
+        emptyState('🔭', 'todavía no hay nada aquí', 'there\'s nothing here yet', 'vuelve pronto', 'come back soon');
         return;
       }
       grid.innerHTML = data.map(blockToCard).join('');
     })
     .catch(() => {
-      emptyState('🔭', 'no se pudo cargar la vitrina ahora mismo', `<a href="${channelUrl}" target="_blank" rel="noopener">verla directo en Are.na</a>`);
+      const linkEs = `<a href="${channelUrl}" target="_blank" rel="noopener">verla directo en Are.na</a>`;
+      const linkEn = `<a href="${channelUrl}" target="_blank" rel="noopener">see it directly on Are.na</a>`;
+      emptyState('🔭', 'no se pudo cargar la vitrina ahora mismo', 'couldn\'t load this right now', linkEs, linkEn);
     });
 })();
 
@@ -341,4 +347,42 @@
       <p class="entry-excerpt">${post.excerpt}</p>
     </article>
   `).join('');
+})();
+
+// ── Switch de idioma ES/EN ────────────────────────
+// Textos marcados con class="i18n" data-en="..." cambian de idioma;
+// todo lo demás (memorias, descripciones de proyectos, el texto del
+// hero) se queda en español hasta que se le agregue su propio data-en.
+(function () {
+  const STORAGE_KEY = 'site-lang';
+  const buttons = document.querySelectorAll('.lang-btn');
+  if (!buttons.length) return;
+
+  function applyLang(lang) {
+    document.querySelectorAll('.i18n').forEach(el => {
+      // Contenido escrito en el HTML: la primera vez que se toca,
+      // captura lo que ya había ahí como el original en español.
+      // Contenido generado por JS puede traer su propio data-es
+      // explícito en vez de depender de esta captura perezosa.
+      if (el.dataset.es === undefined && el.dataset.esOriginal === undefined) {
+        el.dataset.esOriginal = el.innerHTML;
+      }
+      const es = el.dataset.es !== undefined ? el.dataset.es : el.dataset.esOriginal;
+      const en = el.dataset.en;
+      el.innerHTML = (lang === 'en' && en) ? en : es;
+    });
+
+    buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+    document.documentElement.setAttribute('lang', lang);
+
+    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+  });
+
+  let saved = 'es';
+  try { saved = localStorage.getItem(STORAGE_KEY) || 'es'; } catch (e) {}
+  applyLang(saved);
 })();
