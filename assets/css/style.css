@@ -1239,6 +1239,7 @@ a.arena-card:hover {
 }
 
 .chip.s-github    { background: rgba(232,218,255,0.75); }
+.chip.s-linkedin  { background: rgba(200,224,248,0.75); }
 .chip.s-instagram { background: rgba(255,218,236,0.75); }
 .chip.s-hotcakes  { background: rgba(255,238,208,0.75); width: 144px; flex-direction: row; gap: 0.5rem; justify-content: flex-start; padding: 0 0.9rem; }
 .chip.s-hotcakes .chip-name { text-align: left; }
@@ -1421,7 +1422,7 @@ footer p {
   .site-banner { padding: 0 1rem 0 3.5rem; }
   .banner-sep, .banner-pills, .banner-sub { display: none; }
 
-  .main-wrap { margin-left: 0; margin-top: var(--banner-h); padding: 1rem; }
+  .main-wrap { margin-left: 0; margin-top: var(--banner-h); padding: 1rem 1rem calc(var(--footer-h) + 1.5rem); }
 
   .room { padding: 1.8rem 1.4rem; }
   .room-compact { padding: 1.6rem 1.4rem; }
