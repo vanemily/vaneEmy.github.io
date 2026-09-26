@@ -5,7 +5,7 @@ tags: [corazón_abierto]
 
 A finales del mes de abril, viví una experiencia muy profunda.
 
-Me había acompañado una persona que tuvo un lugar muy importante en mi vida, habíamos ido a celebrar su cumpleaños. No me había percatado de que era una experiencia muy extraña para un cumpleaños, hasta este momento que estoy escribiendo. Ahora existimos en lo que compartimos.
+Me había acompañado una persona que tuvo un lugar muy importante en mi vida, habíamos ido a celebrar su cumpleaños. No me había percatado de que era una experiencia muy extraña para un cumpleaños, hasta este momento que estoy escribiendo jeje. Ahora existimos en lo que compartimos.
 
 Hoy vienen a mi mente esos recuerdos, las lágrimas no pueden evitar salir de mis ojos.
 
