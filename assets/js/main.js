@@ -220,30 +220,31 @@ function formatBlockDate(iso) {
       ? `<img src="${image}" alt="${title.replace(/"/g, '&quot;')}" loading="lazy">`
       : '';
 
-    // Bloque de puro texto (sin imagen ni título): se muestra completo,
-    // con sus párrafos, y a todo el ancho de la vitrina para que se lea bien.
-    const isFullText = !image && !title && textHtml;
+    // Bloque de puro texto (sin imagen, con o sin título): se muestra
+    // completo, con sus párrafos, y a todo el ancho de la vitrina para
+    // que se lea bien. Por ahora no enlaza a nada (eso se activa después).
+    const isFullText = !image && textHtml;
 
-    let body = '';
-    if (title || textPlain) {
-      const content = title ? title : (isFullText ? textHtml : textPlain);
-      body = `<div class="arena-card-body">
-                <span class="arena-card-kind">${kind}</span>
-                <div class="arena-card-title">${content}</div>
-              </div>`;
-    }
-
-    // Por ahora los bloques de puro texto no enlazan a nada (eso se
-    // decide después); el resto sí sigue llevando a su link/canal.
     if (isFullText) {
       const dateStr = formatBlockDate(block.created_at || block?.connection?.connected_at);
       const dateHtml = dateStr ? `<p class="arena-card-date">${dateStr}</p>` : '';
-      body = `<div class="arena-card-body">
+      const titleHtml = title ? `<h3 class="arena-card-heading">${title}</h3>` : '';
+      const body = `<div class="arena-card-body">
                 <span class="arena-card-kind">${kind}</span>
+                ${titleHtml}
                 <div class="arena-card-title">${textHtml}</div>
                 ${dateHtml}
               </div>`;
       return `<div class="arena-card arena-card-full">${body}</div>`;
+    }
+
+    let body = '';
+    if (title || textPlain) {
+      const content = title || textPlain;
+      body = `<div class="arena-card-body">
+                <span class="arena-card-kind">${kind}</span>
+                <div class="arena-card-title">${content}</div>
+              </div>`;
     }
 
     return `<a class="arena-card" href="${href}" target="_blank" rel="noopener">${media}${body}</a>`;
