@@ -11,7 +11,7 @@
   --sky:      #C0E0F8;
   --text-dark:  #2A1838;
   --text-mid:   #5A4070;
-  --text-light: #8A70A0;
+  --text-light: #6B5282;
   --sidebar-w:  220px;
   --banner-h:   68px;
   --footer-h:   40px;
@@ -66,8 +66,8 @@ body {
 
 .banner-sub {
   font-family: 'Space Mono', monospace;
-  font-size: 0.54rem;
-  letter-spacing: 0.22em;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-light);
   white-space: nowrap;
@@ -93,7 +93,7 @@ body {
 
 .banner-pill {
   font-family: 'Space Mono', monospace;
-  font-size: 0.52rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   padding: 3px 10px;
   border-radius: 20px;
@@ -115,7 +115,7 @@ body {
 
 .lang-btn {
   font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   padding: 5px 11px;
   border: none;
@@ -172,7 +172,7 @@ body {
 
 .sidebar-name .s-emily {
   font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   letter-spacing: 0.2em;
   color: var(--text-light);
   text-transform: uppercase;
@@ -209,7 +209,7 @@ body {
   border-radius: 8px;
   text-decoration: none;
   font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   letter-spacing: 0.08em;
   color: var(--text-mid);
   transition: background 0.2s, color 0.2s, transform 0.2s;
@@ -243,8 +243,8 @@ body {
 
 .status-title {
   font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-light);
   padding: 0.45rem 0.7rem 0.4rem;
@@ -274,7 +274,7 @@ body {
 
 .status-item .s-type {
   font-family: 'Space Mono', monospace;
-  font-size: 0.48rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   color: var(--text-light);
   text-transform: uppercase;
@@ -368,6 +368,16 @@ body {
 .skip-link:focus { transform: none; }
 
 .main-wrap:focus { outline: none; }
+
+/* Foco visible para quien navega con teclado */
+:focus-visible {
+  outline: 2px solid #5030A0;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* El selector de idioma recorta lo que sale de su borde */
+.lang-btn:focus-visible { outline-offset: -3px; border-radius: 20px; }
 
 /* ════════════════════════════════════════════════
    MAIN CONTENT
@@ -488,8 +498,8 @@ body {
   display: block;
   margin-top: 0.4rem;
   font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.16em;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-light);
 }
@@ -524,7 +534,8 @@ body {
 
 .guestbook-wrap input:focus,
 .guestbook-wrap textarea:focus {
-  outline: none !important;
+  outline: 2px solid #5030A0 !important;
+  outline-offset: 2px !important;
   border-color: rgba(160,120,210,0.6) !important;
   background: rgba(255,255,255,0.85) !important;
 }
@@ -532,7 +543,7 @@ body {
 .guestbook-wrap .btn,
 .guestbook-wrap button[type="submit"] {
   font-family: 'Space Mono', monospace !important;
-  font-size: 0.62rem !important;
+  font-size: 0.8rem !important;
   letter-spacing: 0.1em !important;
   background: var(--lilac) !important;
   color: #4020A0 !important;
@@ -558,7 +569,7 @@ body {
 
 .guestbook-wrap .hcb-comment-author {
   font-family: 'Space Mono', monospace !important;
-  font-size: 0.6rem !important;
+  font-size: 0.75rem !important;
   letter-spacing: 0.08em !important;
   color: var(--text-light) !important;
 }
@@ -567,7 +578,7 @@ body {
   font-family: 'Crimson Text', serif !important;
   font-size: 1rem !important;
   color: var(--text-mid) !important;
-  font-style: italic !important;
+  font-style: normal !important;
   line-height: 1.6 !important;
 }
 
@@ -593,7 +604,7 @@ body {
 .sticker {
   display: inline-block;
   font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 4px 10px;
@@ -707,7 +718,7 @@ body {
 
 .tagline-pill {
   font-family: 'Space Mono', monospace;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   padding: 4px 14px;
   border-radius: 20px;
@@ -753,7 +764,7 @@ body {
 .passion-tag:nth-child(1) { background: var(--lavender); color: #5030A0; }
 .passion-tag:nth-child(2) { background: var(--pink);     color: #A03060; }
 .passion-tag:nth-child(3) { background: var(--mint);     color: #206050; }
-.passion-tag:nth-child(4) { background: var(--yellow);   color: #807010; }
+.passion-tag:nth-child(4) { background: var(--yellow);   color: #6E600C; }
 .passion-tag:nth-child(5) { background: var(--peach);    color: #904020; }
 
 #rabbit {
@@ -792,8 +803,8 @@ body {
 .room-label {
   display: block;
   font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.24em;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-light);
   margin-bottom: 1.4rem;
@@ -841,8 +852,8 @@ body {
   display: block;
   margin-top: 0.6rem;
   font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
   color: var(--text-light);
   text-transform: uppercase;
 }
@@ -872,7 +883,7 @@ body {
 .blog-entry .entry-date {
   display: block;
   font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
+  font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-light);
@@ -908,7 +919,7 @@ body {
 
 .tag-pill {
   font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   padding: 4px 12px;
   border-radius: 20px;
@@ -1045,7 +1056,7 @@ body {
 .semilla-status {
   display: inline-block;
   font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
+  font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 3px 10px;
@@ -1133,7 +1144,7 @@ body {
 
 .tree-label {
   font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
+  font-size: 0.75rem;
   color: var(--text-light);
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1152,7 +1163,7 @@ body {
 .arena-loading {
   grid-column: 1 / -1;
   font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-light);
@@ -1200,7 +1211,7 @@ a.arena-card:hover {
 .arena-card .arena-card-kind {
   display: block;
   font-family: 'Space Mono', monospace;
-  font-size: 0.48rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-light);
@@ -1241,7 +1252,7 @@ a.arena-card:hover {
   margin-top: 0.8rem;
   text-align: right;
   font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   color: var(--text-light);
 }
@@ -1263,7 +1274,8 @@ a.arena-card:hover {
   align-items: center;
   justify-content: center;
   gap: 0.2rem;
-  width: 68px; height: 68px;
+  width: 96px; min-height: 80px;
+  padding: 0.5rem 0.3rem;
   border-radius: 14px;
   border: 1.5px solid rgba(0,0,0,0.07);
   text-decoration: none;
@@ -1284,7 +1296,7 @@ a.arena-card:hover {
 .chip-icon svg { width: 1.3rem; height: 1.3rem; display: block; color: var(--text-dark); }
 .chip-name {
   font-family: 'Space Mono', monospace;
-  font-size: 0.46rem;
+  font-size: 0.75rem;
   letter-spacing: 0.05em;
   color: var(--text-mid);
   text-align: center;
@@ -1322,7 +1334,7 @@ a.arena-card:hover {
   background: var(--peach);
   color: #904020;
   font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-decoration: none;
   border: 1.5px solid rgba(0,0,0,0.08);
@@ -1376,7 +1388,7 @@ footer {
 
 footer p {
   font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
+  font-size: 0.75rem;
   color: var(--text-light);
   letter-spacing: 0.12em;
 }
@@ -1487,6 +1499,10 @@ footer a:hover { color: var(--text-dark); }
 
   .site-banner { padding: 0 1rem 0 3.5rem; }
   .banner-sep, .banner-pills, .banner-sub { display: none; }
+
+  :root { --footer-h: 52px; }
+  footer { text-align: center; padding: 0 0.8rem; }
+  footer p { letter-spacing: 0.04em; line-height: 1.4; }
 
   .main-wrap { margin-left: 0; margin-top: var(--banner-h); padding: 1rem 1rem calc(var(--footer-h) + 1.5rem); }
 
