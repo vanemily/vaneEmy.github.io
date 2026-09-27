@@ -47,16 +47,18 @@ function formatBlockDate(iso) {
 
   let rabbitBusy = false;
 
-  rabbit.addEventListener('click', () => {
+  // Es un <a> real: sin JS (o con Cmd/Ctrl+clic) navega normal.
+  // Con JS, primero se cae al hoyo y luego sigue el enlace.
+  rabbit.addEventListener('click', e => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
     if (rabbitBusy) return;
     rabbitBusy = true;
 
     rabbit.classList.add('falling');
 
     setTimeout(() => {
-      if (rabbit.dataset.href) {
-        window.location.href = rabbit.dataset.href;
-      }
+      window.location.href = rabbit.href;
     }, 900);
   });
 })();
@@ -152,11 +154,13 @@ function formatBlockDate(iso) {
 
 // ── Card reveal (laboratorio) ────────────────────
 (function () {
-  document.querySelectorAll('.semilla-card').forEach(card => {
-    card.addEventListener('click', () => {
-      if (card.classList.contains('revealed')) return;
-      card.classList.add('revealed');
-      setTimeout(() => card.classList.remove('revealed'), 3000);
+  // Abre y cierra el mensaje escondido (sin temporizador, para que
+  // cualquiera tenga el tiempo que necesite para leerlo).
+  document.querySelectorAll('.semilla-toggle').forEach(btn => {
+    const card = btn.closest('.semilla-card');
+    btn.addEventListener('click', () => {
+      const open = card.classList.toggle('revealed');
+      btn.setAttribute('aria-expanded', String(open));
     });
   });
 })();
@@ -168,13 +172,63 @@ function formatBlockDate(iso) {
   const overlay   = document.getElementById('sidebar-overlay');
   if (!sidebar || !hamburger || !overlay) return;
 
-  function openSidebar()  { sidebar.classList.add('open');    overlay.classList.add('active');    hamburger.textContent = '✕'; }
-  function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); hamburger.textContent = '☰'; }
+  const icon   = hamburger.querySelector('.hamburger-icon');
+  const mobile = window.matchMedia('(max-width: 720px)');
+
+  // En móvil el sidebar cerrado queda fuera de pantalla: con `inert`
+  // sus enlaces tampoco reciben foco con Tab ni los lee el lector.
+  function syncInert() {
+    sidebar.inert = mobile.matches && !sidebar.classList.contains('open');
+  }
+
+  function setLabel(open) {
+    const en = currentLang() === 'en';
+    hamburger.setAttribute('aria-label', open
+      ? (en ? 'Close menu' : 'Cerrar menú')
+      : (en ? 'Open menu'  : 'Abrir menú'));
+  }
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('active');
+    icon.textContent = '✕';
+    hamburger.setAttribute('aria-expanded', 'true');
+    setLabel(true);
+    syncInert();
+    const first = sidebar.querySelector('a');
+    if (first) first.focus();
+  }
+
+  function closeSidebar({ returnFocus = false } = {}) {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+    icon.textContent = '☰';
+    hamburger.setAttribute('aria-expanded', 'false');
+    setLabel(false);
+    syncInert();
+    if (returnFocus) hamburger.focus();
+  }
 
   hamburger.addEventListener('click', () => sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
-  overlay.addEventListener('click', closeSidebar);
+  overlay.addEventListener('click', () => closeSidebar());
 
-  sidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', closeSidebar));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && sidebar.classList.contains('open')) closeSidebar({ returnFocus: true });
+  });
+
+  sidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', () => closeSidebar()));
+
+  // Si la ventana pasa de móvil a escritorio (o al revés), recalcular.
+  mobile.addEventListener('change', () => {
+    if (!mobile.matches) closeSidebar();
+    syncInert();
+  });
+
+  // Etiqueta en el idioma actual cuando cambian ES/EN.
+  document.addEventListener('langchange', () => setLabel(sidebar.classList.contains('open')));
+
+  setLabel(false);
+  syncInert();
 })();
 
 // ── Vitrina: trae en vivo el canal de Are.na ─────
@@ -198,11 +252,30 @@ function formatBlockDate(iso) {
       </div>`;
   }
 
+  const status = document.getElementById('arena-status');
+  const escAttr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+  function announce(textEs, textEn) {
+    grid.setAttribute('aria-busy', 'false');
+    if (status) status.textContent = currentLang() === 'en' ? textEn : textEs;
+  }
+
+  // Títulos que en realidad son nombres de archivo ("IMG_2034.jpg") no
+  // sirven como texto alternativo.
+  function looksLikeFilename(s) {
+    return /\.(jpe?g|png|gif|webp|avif|heic|svg)$/i.test(s) || /^(img|dsc|screenshot|captura)[\s_-]?\d/i.test(s);
+  }
+
   function blockToCard(block) {
     const title = (block.title || block.generated_title || '').trim();
     const kind = block.class || block.base_class || block.type || 'block';
 
+    // API v3: las imágenes vienen en image.src / image.medium.src.
+    // Se dejan los campos de la v2 como respaldo.
     const image =
+      block?.image?.medium?.src ||
+      block?.image?.large?.src ||
+      block?.image?.src ||
       block?.image?.display?.url ||
       block?.image?.large?.url ||
       block?.image?.original?.url ||
@@ -216,8 +289,13 @@ function formatBlockDate(iso) {
     const textHtml = block?.content?.html || '';
     const textPlain = (block?.content?.plain || block?.description?.plain || '').trim();
 
+    // Texto alternativo: primero el "alt text" que se escribe en Are.na;
+    // si no hay, el título (si no es un nombre de archivo); si no, vacío.
+    const altText = (block?.image?.alt_text || '').trim() ||
+      (title && !looksLikeFilename(title) ? title : '');
+
     const media = image
-      ? `<img src="${image}" alt="${title.replace(/"/g, '&quot;')}" loading="lazy">`
+      ? `<img src="${escAttr(image)}" alt="${escAttr(altText)}" loading="lazy">`
       : '';
 
     // Bloque de puro texto (sin imagen, con o sin título): se muestra
@@ -228,7 +306,7 @@ function formatBlockDate(iso) {
     if (isFullText) {
       const dateStr = formatBlockDate(block.created_at || block?.connection?.connected_at);
       const dateHtml = dateStr ? `<p class="arena-card-date">${dateStr}</p>` : '';
-      const titleHtml = title ? `<h3 class="arena-card-heading">${title}</h3>` : '';
+      const titleHtml = title ? `<h2 class="arena-card-heading">${title}</h2>` : '';
       const body = `<div class="arena-card-body">
                 <span class="arena-card-kind">${kind}</span>
                 ${titleHtml}
@@ -239,15 +317,21 @@ function formatBlockDate(iso) {
     }
 
     let body = '';
-    if (title || textPlain) {
-      const content = title || textPlain;
+    const content = title || textPlain;
+    if (content) {
       body = `<div class="arena-card-body">
                 <span class="arena-card-kind">${kind}</span>
                 <div class="arena-card-title">${content}</div>
               </div>`;
     }
 
-    return `<a class="arena-card" href="${href}" target="_blank" rel="noopener">${media}${body}</a>`;
+    // Un enlace nunca puede quedarse sin nombre: si no hay texto visible
+    // ni alt, se le da uno con aria-label.
+    const label = !content && !altText
+      ? ` aria-label="${currentLang() === 'en' ? 'Open block on Are.na' : 'Abrir bloque en Are.na'}"`
+      : '';
+
+    return `<a class="arena-card" href="${escAttr(href)}" target="_blank" rel="noopener"${label}>${media}${body}</a>`;
   }
 
   fetch(`https://api.are.na/v3/channels/${channel}/contents?per=24`)
@@ -258,12 +342,15 @@ function formatBlockDate(iso) {
     .then(({ data }) => {
       if (!data || data.length === 0) {
         emptyState('🔭', 'todavía no hay nada aquí', 'there\'s nothing here yet', 'vuelve pronto', 'come back soon');
+        announce('todavía no hay nada aquí', 'there\'s nothing here yet');
         return;
       }
       grid.innerHTML = data.map(blockToCard).join('');
+      announce(`se cargaron ${data.length} curiosidades`, `${data.length} curiosities loaded`);
     })
     .catch(() => {
       emptyState('🔭', 'no se pudo cargar la vitrina ahora mismo', 'couldn\'t load this right now', 'vuelve pronto', 'come back soon');
+      announce('no se pudo cargar la vitrina ahora mismo', 'couldn\'t load this right now');
     });
 })();
 
@@ -408,10 +495,18 @@ function formatBlockDate(iso) {
       el.innerHTML = (lang === 'en' && en) ? en : es;
     });
 
+    // Etiquetas accesibles (aria-label) con su versión en inglés en data-en-label.
+    document.querySelectorAll('[data-en-label]').forEach(el => {
+      if (el.dataset.esLabel === undefined) el.dataset.esLabel = el.getAttribute('aria-label') || '';
+      el.setAttribute('aria-label', lang === 'en' ? el.dataset.enLabel : el.dataset.esLabel);
+    });
+
     buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
     document.documentElement.setAttribute('lang', lang);
 
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+
+    document.dispatchEvent(new CustomEvent('langchange', { detail: { lang } }));
   }
 
   buttons.forEach(btn => {

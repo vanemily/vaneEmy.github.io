@@ -4,16 +4,18 @@ title: Extraños delirios de jengibre
 <section class="room room-compact room-vitrina" id="vitrina">
   <div class="room-inner">
     <span class="room-label reveal i18n" data-en="a small archive">un pequeño archivo</span>
-    <h2 class="room-title reveal">Extraños delirios de <em>jengibre</em></h2>
+    <h1 class="room-title reveal">Extraños delirios de <em>jengibre</em></h1>
     <a class="listen-btn reveal i18n" data-en="🎧 listen to the album" href="https://music.youtube.com/playlist?list=OLAK5uy_m8zg_5YABGPKQNkIv_Pl--xUtD4YXJEFE" target="_blank" rel="noopener">🎧 escuchar el álbum</a>
     <div
       class="arena-grid reveal"
       id="arena-grid"
       data-arena-channel="extranos-delirios-de-gengibre"
       data-arena-url="https://www.are.na/vane-emy-xselfrzidfa/extranos-delirios-de-gengibre"
+      aria-busy="true"
     >
       <div class="arena-loading">cargando curiosidades…</div>
     </div>
+    <p class="sr-only" id="arena-status" role="status"></p>
 
     {% assign related = site.tags["extranos-delirios-de-jengibre"] %}
     {% if related and related.size > 0 %}

@@ -5,16 +5,18 @@
 </head>
 <body>
 
+  <a class="skip-link i18n" href="#contenido" data-en="Skip to content">Saltar al contenido</a>
+
   {% include banner.html %}
   {% include sidebar.html %}
 
-  <div class="main-wrap">
+  <main class="main-wrap" id="contenido" tabindex="-1">
 
     {{ content }}
 
-    {% include footer.html %}
+  </main><!-- /main-wrap -->
 
-  </div><!-- /main-wrap -->
+  {% include footer.html %}
 
   {% include scripts.html %}
 
