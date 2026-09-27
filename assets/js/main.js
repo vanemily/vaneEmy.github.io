@@ -1,3 +1,6 @@
+// ── Movimiento reducido (preferencia del sistema) ──
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 // ── Idioma actual (usado por cualquier contenido que se genera con JS) ──
 function currentLang() {
   try {
@@ -30,6 +33,11 @@ function formatBlockDate(iso) {
   const text = 'el mundo de:';
   let ti = 0;
 
+  if (reduceMotion) {
+    target.textContent = text;
+    return;
+  }
+
   function typeNext() {
     if (ti <= text.length) {
       target.textContent = text.slice(0, ti++);
@@ -50,7 +58,7 @@ function formatBlockDate(iso) {
   // Es un <a> real: sin JS (o con Cmd/Ctrl+clic) navega normal.
   // Con JS, primero se cae al hoyo y luego sigue el enlace.
   rabbit.addEventListener('click', e => {
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (reduceMotion || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
     if (rabbitBusy) return;
     rabbitBusy = true;
@@ -94,7 +102,7 @@ function formatBlockDate(iso) {
     }
   }
 
-  document.querySelectorAll('.room').forEach(r => scatterStars(r, 8));
+  if (!reduceMotion) document.querySelectorAll('.room').forEach(r => scatterStars(r, 8));
 })();
 
 // ── Sparkle on click ──────────────────────────────
@@ -142,6 +150,7 @@ function formatBlockDate(iso) {
   const defaultColors  = ['#C8A0FF','#FFB0D8','#80E0B8','#FFE060','#A0D0FF'];
 
   document.addEventListener('click', e => {
+    if (reduceMotion) return;
     let config = null, node = e.target;
     while (node && node !== document.body) {
       if (elementMap.has(node)) { config = elementMap.get(node); break; }
@@ -450,7 +459,7 @@ function formatBlockDate(iso) {
   const tag = new URLSearchParams(window.location.search).get('t');
 
   if (!tag) {
-    results.innerHTML = '<div class="blog-coming reveal"><span class="bc-icon">🔎</span><p>no se especificó ningún tag</p></div>';
+    results.innerHTML = '<div class="blog-coming"><span class="bc-icon">🔎</span><p>no se especificó ningún tag</p></div>';
     return;
   }
 
@@ -459,12 +468,12 @@ function formatBlockDate(iso) {
   const matches = posts.filter(p => Array.isArray(p.tags) && p.tags.includes(tag));
 
   if (matches.length === 0) {
-    results.innerHTML = '<div class="blog-coming reveal"><span class="bc-icon">🔎</span><p>todavía no hay memorias con este tag</p></div>';
+    results.innerHTML = '<div class="blog-coming"><span class="bc-icon">🔎</span><p>todavía no hay memorias con este tag</p></div>';
     return;
   }
 
   results.innerHTML = matches.map(post => `
-    <article class="blog-entry reveal">
+    <article class="blog-entry">
       <span class="entry-date">${fechaEs(post.date)}</span>
       <a class="entry-title" href="${post.url}">${post.title}</a>
       <p class="entry-excerpt">${post.excerpt}</p>
