@@ -5,7 +5,7 @@ title: Extraños delirios de jengibre
   <div class="room-inner">
     <span class="room-label reveal i18n" data-en="a small archive">un pequeño archivo</span>
     <h1 class="room-title reveal">Extraños delirios de <em>jengibre</em></h1>
-    <a class="listen-btn reveal i18n" data-en="🎧 listen to the album" href="https://music.youtube.com/playlist?list=OLAK5uy_m8zg_5YABGPKQNkIv_Pl--xUtD4YXJEFE" target="_blank" rel="noopener">🎧 escuchar el álbum</a>
+    <a class="listen-btn reveal" href="https://music.youtube.com/playlist?list=OLAK5uy_m8zg_5YABGPKQNkIv_Pl--xUtD4YXJEFE" target="_blank" rel="noopener"><span aria-hidden="true">🎧</span> <span class="i18n" data-en="listen to the album">escuchar el álbum</span></a>
     <div
       class="arena-grid reveal"
       id="arena-grid"
@@ -20,10 +20,10 @@ title: Extraños delirios de jengibre
     {% assign related = site.tags["extranos-delirios-de-jengibre"] %}
     {% if related and related.size > 0 %}
     <span class="room-label reveal i18n" data-en="memories from this project" style="margin-top:2rem;">memorias de este proyecto</span>
-    <div class="blog-list">
+    <div class="blog-list" lang="es">
       {% for post in related %}
       <article class="blog-entry reveal">
-        <span class="entry-date">{% include fecha-es.html fecha=post.date %}</span>
+        <time class="entry-date" datetime="{{ post.date | date: '%Y-%m-%d' }}">{% include fecha-es.html fecha=post.date %}</time>
         <a class="entry-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
         <p class="entry-excerpt">{{ post.excerpt | strip_html | split: '.' | first | append: '.' }}</p>
       </article>

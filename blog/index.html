@@ -8,10 +8,10 @@ title: Memorias
     <p class="room-text reveal i18n" data-en="Words, learnings, and notes from the worlds I'm exploring.">Palabras, aprendizajes y apuntes de los mundos que voy explorando.</p>
 
     {% if site.posts.size > 0 %}
-    <div class="blog-list">
+    <div class="blog-list" lang="es">
       {% for post in site.posts %}
       <article class="blog-entry reveal">
-        <span class="entry-date">{% include fecha-es.html fecha=post.date %}</span>
+        <time class="entry-date" datetime="{{ post.date | date: '%Y-%m-%d' }}">{% include fecha-es.html fecha=post.date %}</time>
         <a class="entry-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
         <p class="entry-excerpt">{{ post.excerpt | strip_html | split: '.' | first | append: '.' }}</p>
       </article>
@@ -19,7 +19,7 @@ title: Memorias
     </div>
     {% else %}
     <div class="blog-coming reveal">
-      <span class="bc-icon">📝</span>
+      <span class="bc-icon" aria-hidden="true">📝</span>
       <p class="i18n" data-en="the pages are taking shape">las páginas están tomando forma</p>
       <small class="i18n" data-en="coming soon · very soon · almost there">próximamente · muy pronto · ya casi</small>
     </div>

@@ -2,14 +2,14 @@
 
   <p class="status-title i18n" data-en="navigate" style="margin-bottom:-0.5rem;">navegar</p>
   <nav class="sidebar-nav">
-    <a href="{{ '/' | relative_url }}" class="{% if page.url == '/' %}active{% endif %}"><span class="nav-icon">🍄</span> <span class="i18n" data-en="home">inicio</span></a>
-    <a href="{{ '/blog/' | relative_url }}" class="{% if page.url contains '/blog/' %}active{% endif %}"><span class="nav-icon">📖</span> <span class="i18n" data-en="memories">memorias</span></a>
-    <a href="{{ '/laboratorio/' | relative_url }}" class="{% if page.url == '/laboratorio/' %}active{% endif %}"><span class="nav-icon">🌱</span> <span class="i18n" data-en="path of dreams">sendero de los sueños</span></a>
-    <a href="{{ '/delirios-de-primavera/' | relative_url }}" class="{% if page.url == '/delirios-de-primavera/' %}active{% endif %}"><span class="nav-icon">🌻</span> <span class="i18n" data-en="spring deliriums">delirios de primavera</span></a>
-    <a href="{{ '/extranos-delirios-de-jengibre/' | relative_url }}" class="{% if page.url == '/extranos-delirios-de-jengibre/' %}active{% endif %}"><span class="nav-icon">🎶</span> extraños delirios de jengibre</a>
-    <a href="{{ '/corazon-entretejido/' | relative_url }}" class="{% if page.url == '/corazon-entretejido/' %}active{% endif %}"><span class="nav-icon">🧶</span> <span class="i18n" data-en="interwoven heart">corazón entretejido</span></a>
-    <a href="{{ '/redes/' | relative_url }}" class="{% if page.url == '/redes/' %}active{% endif %}"><span class="nav-icon">🔮</span> <span class="i18n" data-en="portals">portales</span></a>
-    <a href="{{ '/visitas/' | relative_url }}" class="{% if page.url == '/visitas/' %}active{% endif %}"><span class="nav-icon">📬</span> <span class="i18n" data-en="guestbook">visitas</span></a>
+    <a href="{{ '/' | relative_url }}" class="{% if page.url == '/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🍄</span> <span class="i18n" data-en="home">inicio</span></a>
+    <a href="{{ '/blog/' | relative_url }}" class="{% if page.url contains '/blog/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">📖</span> <span class="i18n" data-en="memories">memorias</span></a>
+    <a href="{{ '/laboratorio/' | relative_url }}" class="{% if page.url == '/laboratorio/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🌱</span> <span class="i18n" data-en="path of dreams">sendero de los sueños</span></a>
+    <a href="{{ '/delirios-de-primavera/' | relative_url }}" class="{% if page.url == '/delirios-de-primavera/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🌻</span> <span class="i18n" data-en="spring deliriums">delirios de primavera</span></a>
+    <a href="{{ '/extranos-delirios-de-jengibre/' | relative_url }}" class="{% if page.url == '/extranos-delirios-de-jengibre/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🎶</span> <span lang="es">extraños delirios de jengibre</span></a>
+    <a href="{{ '/corazon-entretejido/' | relative_url }}" class="{% if page.url == '/corazon-entretejido/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🧶</span> <span class="i18n" data-en="interwoven heart">corazón entretejido</span></a>
+    <a href="{{ '/redes/' | relative_url }}" class="{% if page.url == '/redes/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🔮</span> <span class="i18n" data-en="portals">portales</span></a>
+    <a href="{{ '/visitas/' | relative_url }}" class="{% if page.url == '/visitas/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">📬</span> <span class="i18n" data-en="guestbook">visitas</span></a>
   </nav>
 
   <hr class="sidebar-divider">
@@ -18,7 +18,7 @@
     <p class="status-title i18n" data-en="status">status</p>
 
     <div class="status-item">
-      <span class="s-emoji">🎵</span>
+      <span class="s-emoji" aria-hidden="true">🎵</span>
       <div class="s-info">
         <span class="s-type i18n" data-en="listening to">escuchando</span>
         <a href="https://www.youtube.com/watch?v=SKrZdvqzAEc" target="_blank" rel="noopener" class="s-val">Eliane Radigue — Trilogie De la Mort</a>
@@ -26,15 +26,15 @@
     </div>
 
     <div class="status-item">
-      <span class="s-emoji">📖</span>
+      <span class="s-emoji" aria-hidden="true">📖</span>
       <div class="s-info">
         <span class="s-type i18n" data-en="reading">leyendo</span>
-        <span class="s-val">Los hermanos Karamázov</span>
+        <span class="s-val" lang="es">Los hermanos Karamázov</span>
       </div>
     </div>
 
     <div class="status-item">
-      <span class="s-emoji">🌱</span>
+      <span class="s-emoji" aria-hidden="true">🌱</span>
       <div class="s-info">
         <span class="s-type i18n" data-en="making">creando</span>
         <span class="s-val i18n" data-en="something magical">algo mágico</span>
@@ -45,7 +45,7 @@
 
   <hr class="sidebar-divider">
 
-  <div class="sidebar-deco">🍄 · 🌙 · 🔑</div>
+  <div class="sidebar-deco" aria-hidden="true">🍄 · 🌙 · 🔑</div>
 
 </aside>
 

@@ -4,7 +4,7 @@ title: Corazón entretejido
 <section class="room room-compact room-corazon" id="corazon">
   <div class="room-inner">
     <span class="room-label reveal i18n" data-en="a small archive">un pequeño archivo</span>
-    <h1 class="room-title reveal i18n" data-en="Interwoven <em>heart</em> <span style=&quot;font-size:0.6em;&quot;>❤️</span>">Corazón <em>entretejido</em> <span style="font-size:0.6em;">❤️</span></h1>
+    <h1 class="room-title reveal i18n" data-en="Interwoven <em>heart</em> <span aria-hidden=&quot;true&quot; style=&quot;font-size:0.6em;&quot;>❤️</span>">Corazón <em>entretejido</em> <span aria-hidden="true" style="font-size:0.6em;">❤️</span></h1>
     <div
       class="arena-grid reveal"
       id="arena-grid"
@@ -19,10 +19,10 @@ title: Corazón entretejido
     {% assign related = site.tags["corazon-entretejido"] %}
     {% if related and related.size > 0 %}
     <span class="room-label reveal i18n" data-en="memories from this project" style="margin-top:2rem;">memorias de este proyecto</span>
-    <div class="blog-list">
+    <div class="blog-list" lang="es">
       {% for post in related %}
       <article class="blog-entry reveal">
-        <span class="entry-date">{% include fecha-es.html fecha=post.date %}</span>
+        <time class="entry-date" datetime="{{ post.date | date: '%Y-%m-%d' }}">{% include fecha-es.html fecha=post.date %}</time>
         <a class="entry-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
         <p class="entry-excerpt">{{ post.excerpt | strip_html | split: '.' | first | append: '.' }}</p>
       </article>

@@ -10,6 +10,22 @@ function currentLang() {
   }
 }
 
+// ── Escapa texto antes de meterlo en innerHTML ──
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ── Aviso para lectores de pantalla en enlaces que abren otra pestaña ──
+const NEW_TAB_ES = ' (se abre en otra pestaña)';
+const NEW_TAB_EN = ' (opens in a new tab)';
+
+function newTabHint() {
+  const text = currentLang() === 'en' ? NEW_TAB_EN : NEW_TAB_ES;
+  return `<span class="sr-only i18n" data-es="${NEW_TAB_ES}" data-en="${NEW_TAB_EN}">${text}</span>`;
+}
+
 // ── Formatea una fecha (ISO) en el idioma actual ─────
 function formatBlockDate(iso) {
   if (!iso) return '';
@@ -98,6 +114,7 @@ function formatBlockDate(iso) {
         animation-delay:-${(Math.random()*10).toFixed(1)}s;
         color:hsl(${hue},55%,68%);
       `;
+      s.setAttribute('aria-hidden', 'true');
       section.appendChild(s);
     }
   }
@@ -111,6 +128,7 @@ function formatBlockDate(iso) {
     for (let i = 0; i < 7; i++) {
       const el = document.createElement('span');
       el.className = 'sparkle';
+      el.setAttribute('aria-hidden', 'true');
       el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
       const angle = (i / 7) * 360 + Math.random() * 25;
       const dist = 38 + Math.random() * 52;
@@ -255,7 +273,7 @@ function formatBlockDate(iso) {
     const lang = currentLang();
     grid.innerHTML = `
       <div class="coming-soon-box arena-loading" style="grid-column:1/-1;">
-        <span class="cs-icon">${icon}</span>
+        <span class="cs-icon" aria-hidden="true">${icon}</span>
         <p class="i18n" data-es="${esc(textEs)}" data-en="${esc(textEn)}">${lang === 'en' ? textEn : textEs}</p>
         <small class="i18n" data-es="${esc(hintEs)}" data-en="${esc(hintEn)}">${lang === 'en' ? hintEn : hintEs}</small>
       </div>`;
@@ -275,9 +293,22 @@ function formatBlockDate(iso) {
     return /\.(jpe?g|png|gif|webp|avif|heic|svg)$/i.test(s) || /^(img|dsc|screenshot|captura)[\s_-]?\d/i.test(s);
   }
 
+  // Tipo de bloque de Are.na → etiqueta en español / inglés
+  const KINDS = {
+    Text: ['texto', 'text'], Image: ['imagen', 'image'], Link: ['enlace', 'link'],
+    Attachment: ['archivo', 'file'], Embed: ['video', 'embed'], Media: ['video', 'media'],
+    Channel: ['canal', 'channel'],
+  };
+
+  function kindLabel(kind) {
+    const [es, en] = KINDS[kind] || [kind, kind];
+    const lang = currentLang();
+    return `<span class="arena-card-kind i18n" lang="${lang}" data-es="${escHtml(es)}" data-en="${escHtml(en)}">${escHtml(lang === 'en' ? en : es)}</span>`;
+  }
+
   function blockToCard(block) {
-    const title = (block.title || block.generated_title || '').trim();
-    const kind = block.class || block.base_class || block.type || 'block';
+    const title = escHtml((block.title || block.generated_title || '').trim());
+    const kind = kindLabel(block.class || block.base_class || block.type || 'block');
 
     // API v3: las imágenes vienen en image.src / image.medium.src.
     // Se dejan los campos de la v2 como respaldo.
@@ -296,15 +327,16 @@ function formatBlockDate(iso) {
     const href = block?.source?.url || channelUrl;
 
     const textHtml = block?.content?.html || '';
-    const textPlain = (block?.content?.plain || block?.description?.plain || '').trim();
+    const textPlain = escHtml((block?.content?.plain || block?.description?.plain || '').trim());
 
     // Texto alternativo: primero el "alt text" que se escribe en Are.na;
     // si no hay, el título (si no es un nombre de archivo); si no, vacío.
-    const altText = (block?.image?.alt_text || '').trim() ||
+    // (title ya viene escapado)
+    const altText = escHtml((block?.image?.alt_text || '').trim()) ||
       (title && !looksLikeFilename(title) ? title : '');
 
     const media = image
-      ? `<img src="${escAttr(image)}" alt="${escAttr(altText)}" loading="lazy">`
+      ? `<img src="${escAttr(image)}" alt="${altText}" loading="lazy">`
       : '';
 
     // Bloque de puro texto (sin imagen, con o sin título): se muestra
@@ -313,34 +345,39 @@ function formatBlockDate(iso) {
     const isFullText = !image && textHtml;
 
     if (isFullText) {
-      const dateStr = formatBlockDate(block.created_at || block?.connection?.connected_at);
-      const dateHtml = dateStr ? `<p class="arena-card-date">${dateStr}</p>` : '';
+      const when = block.created_at || block?.connection?.connected_at;
+      const dateStr = formatBlockDate(when);
+      const dateHtml = dateStr
+        ? `<p class="arena-card-date" lang="${currentLang()}"><time datetime="${escAttr(when)}">${dateStr}</time></p>`
+        : '';
       const titleHtml = title ? `<h2 class="arena-card-heading">${title}</h2>` : '';
       const body = `<div class="arena-card-body">
-                <span class="arena-card-kind">${kind}</span>
+                ${kind}
                 ${titleHtml}
                 <div class="arena-card-title">${textHtml}</div>
                 ${dateHtml}
               </div>`;
-      return `<div class="arena-card arena-card-full">${body}</div>`;
+      return `<article class="arena-card arena-card-full" lang="es">${body}</article>`;
     }
 
     let body = '';
     const content = title || textPlain;
     if (content) {
       body = `<div class="arena-card-body">
-                <span class="arena-card-kind">${kind}</span>
+                ${kind}
                 <div class="arena-card-title">${content}</div>
               </div>`;
     }
 
     // Un enlace nunca puede quedarse sin nombre: si no hay texto visible
-    // ni alt, se le da uno con aria-label.
+    // ni alt, se le da uno con aria-label (que cambia con ES/EN).
+    const labelEs = 'Abrir bloque en Are.na' + NEW_TAB_ES;
+    const labelEn = 'Open block on Are.na' + NEW_TAB_EN;
     const label = !content && !altText
-      ? ` aria-label="${currentLang() === 'en' ? 'Open block on Are.na' : 'Abrir bloque en Are.na'}"`
+      ? ` aria-label="${currentLang() === 'en' ? labelEn : labelEs}" data-es-label="${labelEs}" data-en-label="${labelEn}"`
       : '';
 
-    return `<a class="arena-card" href="${escAttr(href)}" target="_blank" rel="noopener"${label}>${media}${body}</a>`;
+    return `<a class="arena-card" lang="es" href="${escAttr(href)}" target="_blank" rel="noopener"${label}>${media}${body}${newTabHint()}</a>`;
   }
 
   fetch(`https://api.are.na/v3/channels/${channel}/contents?per=24`)
@@ -409,6 +446,11 @@ function formatBlockDate(iso) {
         span.className = 'wiki-link wiki-link-missing';
         span.title = 'todavía no existe esta página';
         span.textContent = alias || target;
+        // El title no llega al teclado ni al móvil: el aviso va también como texto.
+        const hint = document.createElement('span');
+        hint.className = 'sr-only';
+        hint.textContent = ' (todavía no existe esta página)';
+        span.appendChild(hint);
         frag.appendChild(span);
       }
 
@@ -459,26 +501,40 @@ function formatBlockDate(iso) {
   const tag = new URLSearchParams(window.location.search).get('t');
 
   if (!tag) {
-    results.innerHTML = '<div class="blog-coming"><span class="bc-icon">🔎</span><p>no se especificó ningún tag</p></div>';
+    results.innerHTML = '<div class="blog-coming"><span class="bc-icon" aria-hidden="true">🔎</span><p>no se especificó ningún tag</p></div>';
     return;
   }
 
-  titleEl.innerHTML = `Memorias con <em>${tag.replace(/_/g, ' ')}</em>`;
+  // El tag viene de la URL: siempre como texto, nunca como HTML.
+  const tagName = tag.replace(/_/g, ' ');
+  const em = document.createElement('em');
+  em.textContent = tagName;
+  titleEl.replaceChildren('Memorias con ', em);
+  document.title = document.title.replace(/^[^·]+/, `Memorias con ${tagName} `);
 
   const matches = posts.filter(p => Array.isArray(p.tags) && p.tags.includes(tag));
 
   if (matches.length === 0) {
-    results.innerHTML = '<div class="blog-coming"><span class="bc-icon">🔎</span><p>todavía no hay memorias con este tag</p></div>';
+    results.innerHTML = '<div class="blog-coming"><span class="bc-icon" aria-hidden="true">🔎</span><p>todavía no hay memorias con este tag</p></div>';
     return;
   }
 
   results.innerHTML = matches.map(post => `
     <article class="blog-entry">
-      <span class="entry-date">${fechaEs(post.date)}</span>
-      <a class="entry-title" href="${post.url}">${post.title}</a>
-      <p class="entry-excerpt">${post.excerpt}</p>
+      <time class="entry-date" datetime="${escHtml(post.date)}">${fechaEs(post.date)}</time>
+      <a class="entry-title" href="${escHtml(post.url)}">${escHtml(post.title)}</a>
+      <p class="entry-excerpt">${escHtml(post.excerpt)}</p>
     </article>
   `).join('');
+})();
+
+// ── Enlaces que abren otra pestaña: avisar al lector de pantalla ──
+// (va antes del switch de idioma para que el aviso también se traduzca;
+// las tarjetas de Are.na lo traen incluido al generarse)
+(function () {
+  document.querySelectorAll('a[target="_blank"]').forEach(a => {
+    a.insertAdjacentHTML('beforeend', newTabHint());
+  });
 })();
 
 // ── Switch de idioma ES/EN ────────────────────────
@@ -501,7 +557,11 @@ function formatBlockDate(iso) {
       }
       const es = el.dataset.es !== undefined ? el.dataset.es : el.dataset.esOriginal;
       const en = el.dataset.en;
-      el.innerHTML = (lang === 'en' && en) ? en : es;
+      const showEn = lang === 'en' && en;
+      el.innerHTML = showEn ? en : es;
+      // Marca el idioma de cada texto traducido, por si está dentro de un
+      // bloque con lang="es" (así el lector usa la voz correcta).
+      el.setAttribute('lang', showEn ? 'en' : 'es');
     });
 
     // Etiquetas accesibles (aria-label) con su versión en inglés en data-en-label.
@@ -510,7 +570,11 @@ function formatBlockDate(iso) {
       el.setAttribute('aria-label', lang === 'en' ? el.dataset.enLabel : el.dataset.esLabel);
     });
 
-    buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+    buttons.forEach(btn => {
+      const on = btn.dataset.lang === lang;
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-pressed', String(on));
+    });
     document.documentElement.setAttribute('lang', lang);
 
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}

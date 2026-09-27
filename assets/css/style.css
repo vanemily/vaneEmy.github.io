@@ -253,7 +253,8 @@ body {
   margin: 0;
 }
 
-.status-title::before { content: '◈  '; font-size: 0.5rem; }
+/* El segundo content (con / '') es texto alternativo vacío: se ve pero no se lee */
+.status-title::before { content: '◈  '; content: '◈  ' / ''; font-size: 0.5rem; }
 
 .status-item {
   display: grid;
@@ -811,7 +812,7 @@ body {
   text-decoration: none;
 }
 
-.room-label::before { content: '✦  '; }
+.room-label::before { content: '✦  '; content: '✦  ' / ''; }
 
 .room-title {
   font-family: 'Playfair Display', serif;

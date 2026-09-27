@@ -3,13 +3,13 @@ layout: default
 ---
 <section class="room room-compact room-blog" id="post">
   <div class="room-inner">
-    <a href="{{ '/blog/' | relative_url }}" class="room-label reveal i18n" data-en="← memories">← memorias</a>
-    <h1 class="room-title reveal">{{ page.title }}</h1>
-    <p class="room-text reveal" style="font-family:'Space Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;color:var(--text-light);text-transform:uppercase;margin-top:-1rem;">
-      {% include fecha-es.html fecha=page.date %}
+    <a href="{{ '/blog/' | relative_url }}" class="room-label reveal"><span aria-hidden="true">← </span><span class="i18n" data-en="memories">memorias</span></a>
+    <h1 class="room-title reveal" lang="es">{{ page.title }}</h1>
+    <p class="room-text reveal" lang="es" style="font-family:'Space Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;color:var(--text-light);text-transform:uppercase;margin-top:-1rem;">
+      <time datetime="{{ page.date | date: '%Y-%m-%d' }}">{% include fecha-es.html fecha=page.date %}</time>
     </p>
     {% if page.tags and page.tags.size > 0 %}
-    <div class="post-tags reveal">
+    <div class="post-tags reveal" lang="es">
       {% for tag in page.tags %}
         {% case tag %}
           {% when 'extranos-delirios-de-jengibre' %}
@@ -22,7 +22,7 @@ layout: default
       {% endfor %}
     </div>
     {% endif %}
-    <div class="post-content reveal">
+    <div class="post-content reveal" lang="es">
       {{ content }}
     </div>
   </div>
