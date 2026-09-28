@@ -209,7 +209,7 @@ body {
   border-radius: 8px;
   text-decoration: none;
   font-family: 'Space Mono', monospace;
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   letter-spacing: 0.08em;
   color: var(--text-mid);
   transition: background 0.2s, color 0.2s, transform 0.2s;
@@ -1275,7 +1275,7 @@ a.arena-card:hover {
   align-items: center;
   justify-content: center;
   gap: 0.2rem;
-  width: 96px; min-height: 80px;
+  width: 112px; min-height: 80px;
   padding: 0.5rem 0.3rem;
   border-radius: 14px;
   border: 1.5px solid rgba(0,0,0,0.07);
@@ -1298,7 +1298,7 @@ a.arena-card:hover {
 .chip-name {
   font-family: 'Space Mono', monospace;
   font-size: 0.75rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
   color: var(--text-mid);
   text-align: center;
   line-height: 1.2;
@@ -1389,13 +1389,15 @@ footer {
 
 footer p {
   font-family: 'Space Mono', monospace;
-  font-size: 0.75rem;
-  color: var(--text-light);
+  font-size: 0.65rem;
+  color: #CED4DA; /* gris clarito (≈1.4:1, por debajo de 4.5:1 a propósito: el footer es solo firma) */
   letter-spacing: 0.12em;
 }
 
-footer a { color: inherit; text-underline-offset: 2px; }
-footer a:hover { color: var(--text-dark); }
+/* Corazón de contorno (♡, no emoji) en gris suave: es decorativo */
+.footer-heart {
+  margin: 0 0.5em;
+}
 
 /* ════════════════════════════════════════════════
    REVEAL
