@@ -1880,13 +1880,9 @@ footer p {
 
   .letter { width:clamp(1.7rem,8vw,2.6rem); height:clamp(2.2rem,10vw,3.4rem); font-size:clamp(1.1rem,5vw,1.8rem); }
   .semillas-grid { grid-template-columns: 1fr; }
-  .arena-grid { gap: 0.7rem; }
-  .arena-card .arena-card-body { padding: 0.55rem 0.6rem; }
-  .arena-card .arena-card-title { font-size: 0.8rem; }
-  .arena-card-text .arena-card-heading { font-size: 0.9rem; }
+  /* una tarjeta por fila en celular (Memorias y corazón entretejido) */
+  .arena-grid { grid-template-columns: 1fr; gap: 1rem; }
   .arena-modal-body { padding: 1.6rem 1.3rem 1.3rem; }
-  .memoria-card .memoria-title { font-size: 0.9rem; }
-  .memoria-cover { padding: 0.6rem; font-size: 0.8rem; }
 
   .social-chips { justify-content: center; }
 }
