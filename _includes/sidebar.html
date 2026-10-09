@@ -1,11 +1,16 @@
+<!-- botón ☰: muestra / esconde el menú (en celular y en computadora) -->
+<button type="button" class="hamburger" id="hamburger" aria-label="Ocultar menú" aria-expanded="true" aria-controls="sidebar"><span class="hamburger-icon" aria-hidden="true">☰</span></button>
+
 <aside class="sidebar" id="sidebar">
 
   <p class="status-title i18n" data-en="navigate" style="margin-bottom:-0.5rem;">navegar</p>
   <nav class="sidebar-nav">
     <a href="{{ '/' | relative_url }}" class="{% if page.url == '/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🍄</span> <span class="i18n" data-en="home">inicio</span></a>
     <a href="{{ '/blog/' | relative_url }}" class="{% if page.url contains '/blog/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">📖</span> <span class="i18n" data-en="memories">memorias</span></a>
-    <a href="{{ '/laboratorio/' | relative_url }}" class="{% if page.url == '/laboratorio/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🌱</span> <span class="i18n" data-en="path of dreams">sendero de los sueños</span></a>
-    <a href="{{ '/delirios-de-primavera/' | relative_url }}" class="{% if page.url == '/delirios-de-primavera/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🌻</span> <span class="i18n" data-en="spring deliriums">delirios de primavera</span></a>
+    <a href="{{ '/laboratorio/' | relative_url }}" class="{% if page.url == '/laboratorio/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🌻</span> <span class="i18n" data-en="path of dreams">sendero de los sueños</span></a>
+    {% comment %}PENDIENTE (escondido por ahora, la página sigue en /delirios-de-primavera/):
+<a href="{{ '/delirios-de-primavera/' | relative_url }}" class="{% if page.url == '/delirios-de-primavera/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🌻</span> <span class="i18n" data-en="spring deliriums">delirios de primavera</span></a>
+    {% endcomment %}
     <a href="{{ '/extranos-delirios-de-jengibre/' | relative_url }}" class="{% if page.url == '/extranos-delirios-de-jengibre/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🎶</span> <span lang="es">extraños delirios de jengibre</span></a>
     <a href="{{ '/corazon-entretejido/' | relative_url }}" class="{% if page.url == '/corazon-entretejido/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🧶</span> <span class="i18n" data-en="interwoven heart">corazón entretejido</span></a>
     <a href="{{ '/redes/' | relative_url }}" class="{% if page.url == '/redes/' %}active{% endif %}"><span class="nav-icon" aria-hidden="true">🔮</span> <span class="i18n" data-en="portals">portales</span></a>
@@ -40,15 +45,86 @@
         <span class="s-val i18n" data-en="something magical">algo mágico</span>
       </div>
     </div>
-
   </div>
 
+  {% comment %}
+    PENDIENTE: disco y librito escondidos por ahora. Para mostrarlos de
+    nuevo, borra esta línea de {% comment %} y su {% endcomment %}.
+  {% endcomment %}
+  {% comment %}
   <hr class="sidebar-divider">
 
-  <div class="sidebar-deco" aria-hidden="true">🍄 · 🌙 · 🔑</div>
+  <!-- Disco de vinilo y librito kawaii, en trazo morado suave. El globito sale
+       al pasar el mouse, con el teclado o al tocarlos. El disco muestra un
+       artista al azar de data-artistas (separados por |). -->
+  <div class="sidebar-dibujos">
+    <button type="button" class="dibujo dibujo-musica" data-artistas="Zoé|Muse|Extraños delirios de jengibre|Green Day|Portishead">
+      <svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true" focusable="false">
+    <g class="disco">
+      <circle cx="32" cy="32" r="28.5" fill="#C4EBDC" stroke="#6B5A9E" stroke-width="2"/>
+      <!-- surcos -->
+      <g fill="none" stroke="#8ECFB9" stroke-width="1.5" stroke-linecap="round">
+        <path d="M44 10.5 a 23 23 0 0 1 11 12"/>
+        <path d="M42 15 a 18 18 0 0 1 8.5 9"/>
+        <path d="M40 19.5 a 13 13 0 0 1 5 5"/>
+        <path d="M20 53.5 a 23 23 0 0 1 -11 -12"/>
+        <path d="M22 49 a 18 18 0 0 1 -8.5 -9"/>
+        <path d="M24 44.5 a 13 13 0 0 1 -5 -5"/>
+      </g>
+      <!-- brillo -->
+      <ellipse cx="17.5" cy="15.5" rx="5.5" ry="2.4" transform="rotate(-40 17.5 15.5)" fill="#FFFDFB"/>
+      <circle cx="24" cy="10.5" r="1.1" fill="#FFFDFB"/>
+      <!-- etiqueta -->
+      <circle cx="32" cy="32" r="11.5" fill="#FFFDFB" stroke="#6B5A9E" stroke-width="1.8"/>
+      <path d="M21.4 32 a 10.6 10.6 0 0 1 21.2 0 z" fill="#F7D6E6"/>
+      <path d="M23.6 32 a 8.4 8.4 0 0 1 16.8 0" fill="none" stroke="#F5E3A0" stroke-width="1.4"/>
+      <path d="M25.6 32 a 6.4 6.4 0 0 1 12.8 0 z" fill="#FCEBE3"/>
+      <circle cx="32" cy="29.5" r="3.4" fill="#C5DDF4" stroke="#6B5A9E" stroke-width="1.6"/>
+      <!-- carita -->
+      <circle cx="27" cy="35.6" r="1.3" fill="#6B5A9E"/>
+      <circle cx="37" cy="35.6" r="1.3" fill="#6B5A9E"/>
+      <path d="M30.4 37 q 1.6 1.6, 3.2 0" fill="none" stroke="#6B5A9E" stroke-width="1.1" stroke-linecap="round"/>
+      <ellipse cx="25.2" cy="38" rx="1.7" ry="1.2" fill="#F2B3C8"/>
+      <ellipse cx="38.8" cy="38" rx="1.7" ry="1.2" fill="#F2B3C8"/>
+    </g>
+  </svg>
+      <span class="dibujo-globo"><em lang="es">Zoé</em></span>
+    </button>
+
+    <button type="button" class="dibujo dibujo-libro">
+      <svg viewBox="0 0 64 62" width="46" height="44" aria-hidden="true" focusable="false">
+    <g transform="rotate(-10 32 31)" stroke="#6B5A9E" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M12 50 L 54 50 C 57 50, 58 48, 58 46 L 58 40 L 12 40 Z" fill="#FFFDFB"/>
+      <path d="M18 44 h 34 M18 47 h 28" stroke="#D9D0EE" stroke-width="1.2" fill="none"/>
+      <rect x="10" y="8" width="46" height="36" rx="5" fill="#F6CEDD"/>
+      <path d="M14 12 q 3 -1.5, 6 -1" stroke="#FFFFFF" stroke-width="1.6" fill="none"/>
+      <path d="M48 8 h 3 a 5 5 0 0 1 5 5 v 3 z" fill="#DCE3F3" stroke-width="1.4"/>
+      <path d="M56 36 v 3 a 5 5 0 0 1 -5 5 h -3 z" fill="#DCE3F3" stroke-width="1.4"/>
+      <g fill="none" stroke="#A493DB" stroke-width="1.8">
+        <path d="M13 13 c -5 -1, -6 4, -2 4.5"/>
+        <path d="M13 20 c -5 -1, -6 4, -2 4.5"/>
+        <path d="M13 27 c -5 -1, -6 4, -2 4.5"/>
+        <path d="M13 34 c -5 -1, -6 4, -2 4.5"/>
+      </g>
+      <path d="M38 44 v 9 l 2 -1.6 l 2 1.6 v -9" fill="#EBA9C4" stroke-width="1.4"/>
+    </g>
+    <g transform="rotate(-10 32 31)">
+      <g class="ojos">
+        <circle cx="25" cy="25" r="3.6" fill="#6B5A9E"/>
+        <circle cx="41" cy="23" r="3.6" fill="#6B5A9E"/>
+        <circle cx="26.1" cy="23.8" r="1.3" fill="#FFFFFF"/>
+        <circle cx="42.1" cy="21.8" r="1.3" fill="#FFFFFF"/>
+      </g>
+      <ellipse cx="21" cy="30.6" rx="2.6" ry="1.5" fill="#F2A7C8"/>
+      <ellipse cx="45" cy="28.4" rx="2.6" ry="1.5" fill="#F2A7C8"/>
+      <path d="M30.2 29.6 q 2.8 3.4, 5.6 -0.6" fill="none" stroke="#6B5A9E" stroke-width="1.3" stroke-linecap="round"/>
+    </g>
+  </svg>
+      <span class="dibujo-globo"><em lang="es">Los hermanos Karamázov</em></span>
+    </button>
+  </div>
+  {% endcomment %}
 
 </aside>
 
-<!-- hamburger móvil -->
-<button type="button" class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar"><span class="hamburger-icon" aria-hidden="true">☰</span></button>
 <div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>

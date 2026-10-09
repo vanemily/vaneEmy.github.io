@@ -33,7 +33,19 @@ _posts/                   # memorias publicadas
 _drafts/                  # memorias sin terminar (no aparecen en el sitio hasta moverlas a _posts/)
 ```
 
-## Escribir una memoria nueva
+## Memorias = textos de Substack
+
+La página `/blog/` (Memorias) muestra como tarjetas los textos publicados en [Substack](https://vanemy.substack.com/). La lista vive en `_data/substack.json`; cada vez que publiques algo nuevo en Substack, actualízala y haz commit:
+
+```bash
+./bin/update-substack.py
+```
+
+`blog/inflexiones/` y `blog/olor-a-lluvia/` son redirecciones a Substack (esas memorias vivían antes aquí).
+
+## Escribir una memoria nueva (en el sitio)
+
+Ya no aparecen en `/blog/`, pero siguen funcionando: una memoria con el tag de una sección (ver abajo) se lista en esa sección.
 
 1. Crear el archivo en `_drafts/nombre-lo-que-sea.md` con al menos:
    ```yaml

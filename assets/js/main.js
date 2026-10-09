@@ -64,27 +64,177 @@ function formatBlockDate(iso) {
   setTimeout(typeNext, 600);
 })();
 
-// ── Rabbit click → cae al hoyo y sigue a "sobre mí" (solo en la portada) ──
+// ── Conejo ────────────────────────────────────────
+// Por ahora vive quieto en la esquina de abajo a la derecha y, si le das
+// clic, sonríe. El código del paseo (salir de un hoyo, dar una vuelta
+// saltando y regresar) está apagado: para encenderlo, ROAM = true y
+// descomentar el hoyo en _includes/rabbit.html.
 (function () {
+  const ROAM = false;
+
   const rabbit = document.getElementById('rabbit');
+  const hole = document.querySelector('.rabbit-hole');
   if (!rabbit) return;
 
-  let rabbitBusy = false;
-
-  // Es un <a> real: sin JS (o con Cmd/Ctrl+clic) navega normal.
-  // Con JS, primero se cae al hoyo y luego sigue el enlace.
-  rabbit.addEventListener('click', e => {
-    if (reduceMotion || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    e.preventDefault();
-    if (rabbitBusy) return;
-    rabbitBusy = true;
-
-    rabbit.classList.add('falling');
-
-    setTimeout(() => {
-      window.location.href = rabbit.href;
-    }, 900);
+  // Clic → sonríe un ratito; al quinto clic seguido se mete al hoyo y
+  // lleva a «sobre mí»
+  const CLICS = 5;
+  let smileTimer = null, clics = 0, lastClick = 0, leaving = false;
+  rabbit.addEventListener('click', () => {
+    if (leaving) return;
+    const now = Date.now();
+    clics = now - lastClick < 2000 ? clics + 1 : 1;
+    lastClick = now;
+    if (clics >= CLICS && rabbit.dataset.href) {
+      leaving = true;
+      rabbit.classList.add('falling');
+      setTimeout(() => { window.location.href = rabbit.dataset.href; }, reduceMotion ? 0 : 800);
+      return;
+    }
+    rabbit.classList.remove('smiling');
+    void rabbit.offsetWidth; // reinicia la animación si lo vuelven a tocar
+    rabbit.classList.add('smiling');
+    clearTimeout(smileTimer);
+    smileTimer = setTimeout(() => rabbit.classList.remove('smiling'), 1800);
   });
+
+  if (reduceMotion || !ROAM || !hole) return;
+
+  let x = 0, y = 0;     // posición actual (px, esquina superior izquierda)
+  let paused = false;   // quieto mientras el mouse o el foco están encima
+  let hidden = true;    // metido en su hoyo
+  let busy = false;
+  let timer = null;
+
+  const wait = ms => new Promise(r => { timer = setTimeout(r, ms); });
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const cssPx = name => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
+
+  // Zona donde puede andar: la ventana sin el banner, el menú lateral ni el pie
+  function bounds() {
+    const w = rabbit.offsetWidth, h = rabbit.offsetHeight;
+    const minX = cssPx('--sidebar-w') + 16, minY = cssPx('--banner-h') + 16;
+    return {
+      minX, minY,
+      maxX: Math.max(minX, window.innerWidth - w - 16),
+      maxY: Math.max(minY, window.innerHeight - cssPx('--footer-h') - h - 8),
+    };
+  }
+
+  // Lugar justo encima del hoyo
+  function home() {
+    const r = hole.getBoundingClientRect();
+    return [r.left + r.width / 2 - rabbit.offsetWidth / 2, r.top - rabbit.offsetHeight + 8];
+  }
+
+
+  function place(nx, ny, ms) {
+    rabbit.style.transition = ms ? `transform ${ms}ms linear, filter 0.2s` : '';
+    rabbit.style.transform = `translate(${nx}px, ${ny}px)`;
+    x = nx; y = ny;
+  }
+
+  // Salta hasta (nx, ny); el dibujo mira a la izquierda, así que se voltea al ir a la derecha
+  async function hopTo(nx, ny, speed = 5) {
+    const ms = Math.max(450, Math.hypot(nx - x, ny - y) * speed);
+    if (Math.abs(nx - x) > 2) rabbit.classList.toggle('facing-right', nx > x);
+    rabbit.classList.add('hopping');
+    place(nx, ny, ms);
+    await wait(ms);
+    rabbit.classList.remove('hopping');
+  }
+
+  // Sale de su hoyo (si alguien lo despierta lejos de casa, sale donde esté)
+  async function popOut() {
+    if (!hidden) return;
+    hidden = false;
+    rabbit.classList.remove('is-hidden', 'hiding');
+    rabbit.classList.add('popping');
+    await sleep(500);
+    rabbit.classList.remove('popping');
+  }
+
+  // Regresa a casa y se mete; si lo atrapan en el camino, se queda afuera
+  async function goHome() {
+    await hopTo(...home());
+    if (paused || busy) return;
+    await wait(500);
+    if (paused || busy) return;
+    rabbit.classList.add('hiding');
+    await wait(600);
+    rabbit.classList.add('is-hidden');
+    rabbit.classList.remove('hiding');
+    hidden = true;
+  }
+
+  async function holdWhilePaused() {
+    while (paused && !busy) await wait(500);
+  }
+
+  async function roam() {
+    await wait(rand(2000, 5000));
+    while (!busy) {
+      if (document.hidden) { await wait(1000); continue; }
+      await holdWhilePaused();
+      if (busy) return;
+
+      if (hidden) {
+        place(...home(), 0);
+        rabbit.classList.remove('facing-right');
+        await popOut();
+      }
+
+      // Da una vuelta: unos saltos por la pantalla, descansando entre uno y otro
+      const hops = Math.round(rand(3, 6));
+      for (let i = 0; i < hops && !busy; i++) {
+        await wait(rand(1200, 3000));
+        await holdWhilePaused();
+        if (busy) return;
+        const b = bounds();
+        await hopTo(
+          clamp(x + rand(-320, 220), b.minX, b.maxX),
+          clamp(y + rand(-220, 160), b.minY, b.maxY)
+        );
+      }
+
+      await wait(rand(800, 2000));
+      await holdWhilePaused();
+      if (busy) return;
+
+      await goHome();
+      if (hidden) await wait(rand(5000, 12000));
+    }
+  }
+
+  // Se detiene donde va para que sea fácil atraparlo; si estaba escondido, sale
+  function pause() {
+    if (busy) return;
+    paused = true;
+    const m = new DOMMatrixReadOnly(getComputedStyle(rabbit).transform);
+    rabbit.classList.remove('hopping');
+    place(m.m41, m.m42, 0);
+    popOut();
+  }
+
+  rabbit.addEventListener('mouseenter', pause);
+  rabbit.addEventListener('focus', pause);
+  rabbit.addEventListener('mouseleave', () => { paused = document.activeElement === rabbit; });
+  rabbit.addEventListener('blur', () => { paused = false; });
+
+  // Si la ventana cambia de tamaño, que no se quede afuera
+  window.addEventListener('resize', () => {
+    if (hidden) { place(...home(), 0); return; }
+    const b = bounds();
+    place(clamp(x, b.minX, b.maxX), clamp(y, b.minY, b.maxY), 0);
+  });
+
+  rabbit.classList.remove('resting');
+  rabbit.classList.add('is-hidden');
+  place(...home(), 0);
+  roam();
+
 })();
 
 // ── Scroll reveal ─────────────────────────────────
@@ -149,12 +299,13 @@ function formatBlockDate(iso) {
     { sel: '.semilla-card.wide',      symbols: ['❤️','🩷','💕','💗','♡'],    colors: ['#FF6090','#FF90B0','#FFB0C8'] },
     { sel: '.semilla-card.half-left', symbols: ['🌸','🌺','🌼','✿','🌷'],    colors: ['#FFB0D0','#FF90C0','#E0B0FF'] },
     { sel: '.semilla-card.tree-card', symbols: ['🍃','🌿','🌱','🍀'],         colors: ['#80C890','#A0D8A0','#C0F0C0'] },
+    { sel: '#rabbit',                 symbols: ['♡','💕','✿','🥕'],          colors: ['#F2A7C8','#E87FAE','#FFB0D8'] },
     { sel: '.letter',                 symbols: ['✦','✧','⋆','·','★'],        colors: ['#C8A0FF','#FFB0D8','#80E0B8','#FFE060'] },
-    { sel: '.passion-tag:nth-child(1)', symbols: ['✦','✧','🎨'],             colors: ['#C8A0FF','#B090E0'] },
-    { sel: '.passion-tag:nth-child(2)', symbols: ['🎵','🎶','♪','♫'],        colors: ['#FFB0D8','#FF90C0'] },
-    { sel: '.passion-tag:nth-child(3)', symbols: ['✿','🌀','💫'],             colors: ['#80E0B8','#60C090'] },
-    { sel: '.passion-tag:nth-child(4)', symbols: ['✧','⋆','🌟'],             colors: ['#FFE060','#F0C020'] },
-    { sel: '.passion-tag:nth-child(5)', symbols: ['🌙','⭐','✦'],            colors: ['#A0C0FF','#8090E0'] },
+    { sel: '.passion-tag:nth-child(5n+1)', symbols: ['✦','✧','🎨'],             colors: ['#C8A0FF','#B090E0'] },
+    { sel: '.passion-tag:nth-child(5n+2)', symbols: ['🎵','🎶','♪','♫'],        colors: ['#FFB0D8','#FF90C0'] },
+    { sel: '.passion-tag:nth-child(5n+3)', symbols: ['✿','🌀','💫'],             colors: ['#80E0B8','#60C090'] },
+    { sel: '.passion-tag:nth-child(5n+4)', symbols: ['✧','⋆','🌟'],             colors: ['#FFE060','#F0C020'] },
+    { sel: '.passion-tag:nth-child(5n+5)', symbols: ['🌙','⭐','✦'],            colors: ['#A0C0FF','#8090E0'] },
     { sel: '.blog-coming',            symbols: ['📝','✍️','📖'],              colors: ['#A0B0FF','#C0D0FF'] },
     { sel: '.chip',                   symbols: ['✦','⋆','·','✧'],            colors: ['#C8A0FF','#FFB0D8','#80E0B8'] },
   ];
@@ -192,36 +343,71 @@ function formatBlockDate(iso) {
   });
 })();
 
-// ── Hamburger (móvil) ─────────────────────────────
+// ── Dibujitos del menú (disco y librito) ─────────
+// Al tocarlos se muestra / esconde su globito (para el celular, donde no
+// hay mouse). El disco, cada vez que el mouse o el teclado llegan a
+// ellas, muestran un artista al azar (sin repetir el anterior).
+(function () {
+  const dibujos = document.querySelectorAll('.dibujo');
+  if (!dibujos.length) return;
+
+  dibujos.forEach(d => d.addEventListener('click', () => d.classList.toggle('abierto')));
+  document.addEventListener('click', e => {
+    dibujos.forEach(d => { if (!d.contains(e.target)) d.classList.remove('abierto'); });
+  });
+
+  const notas = document.querySelector('.dibujo-musica');
+  if (!notas) return;
+  const artistas = notas.dataset.artistas.split('|');
+  const texto = notas.querySelector('.dibujo-globo em');
+  let actual = texto.textContent;
+
+  function otroArtista() {
+    const opciones = artistas.filter(a => a !== actual);
+    actual = opciones[Math.floor(Math.random() * opciones.length)];
+    texto.textContent = actual;
+  }
+
+  notas.addEventListener('mouseenter', otroArtista);
+  notas.addEventListener('focus', otroArtista);
+  notas.addEventListener('click', () => { if (notas.classList.contains('abierto')) otroArtista(); });
+  otroArtista();
+})();
+
+// ── Botón ☰: menú lateral ─────────────────────────
+// En el celular abre el menú encima de la página (con fondo oscuro).
+// En computadora lo esconde o lo muestra, y se recuerda entre páginas.
 (function () {
   const sidebar   = document.getElementById('sidebar');
   const hamburger = document.getElementById('hamburger');
   const overlay   = document.getElementById('sidebar-overlay');
   if (!sidebar || !hamburger || !overlay) return;
 
+  const root   = document.documentElement;
   const icon   = hamburger.querySelector('.hamburger-icon');
   const mobile = window.matchMedia('(max-width: 720px)');
 
-  // En móvil el sidebar cerrado queda fuera de pantalla: con `inert`
-  // sus enlaces tampoco reciben foco con Tab ni los lee el lector.
-  function syncInert() {
-    sidebar.inert = mobile.matches && !sidebar.classList.contains('open');
-  }
+  const isOpen = () => mobile.matches
+    ? sidebar.classList.contains('open')
+    : !root.classList.contains('menu-cerrado');
 
-  function setLabel(open) {
+  // Menú fuera de pantalla: con `inert` sus enlaces tampoco reciben foco
+  // con Tab ni los lee el lector de pantalla.
+  function sync() {
+    const open = isOpen();
+    sidebar.inert = !open;
+    hamburger.setAttribute('aria-expanded', String(open));
+    icon.textContent = open && mobile.matches ? '✕' : '☰';
     const en = currentLang() === 'en';
-    hamburger.setAttribute('aria-label', open
-      ? (en ? 'Close menu' : 'Cerrar menú')
-      : (en ? 'Open menu'  : 'Abrir menú'));
+    hamburger.setAttribute('aria-label', mobile.matches
+      ? (open ? (en ? 'Close menu' : 'Cerrar menú') : (en ? 'Open menu' : 'Abrir menú'))
+      : (open ? (en ? 'Hide menu' : 'Ocultar menú') : (en ? 'Show menu' : 'Mostrar menú')));
   }
 
   function openSidebar() {
     sidebar.classList.add('open');
     overlay.classList.add('active');
-    icon.textContent = '✕';
-    hamburger.setAttribute('aria-expanded', 'true');
-    setLabel(true);
-    syncInert();
+    sync();
     const first = sidebar.querySelector('a');
     if (first) first.focus();
   }
@@ -229,33 +415,41 @@ function formatBlockDate(iso) {
   function closeSidebar({ returnFocus = false } = {}) {
     sidebar.classList.remove('open');
     overlay.classList.remove('active');
-    icon.textContent = '☰';
-    hamburger.setAttribute('aria-expanded', 'false');
-    setLabel(false);
-    syncInert();
+    sync();
     if (returnFocus) hamburger.focus();
   }
 
-  hamburger.addEventListener('click', () => sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
+  function toggleDesktop() {
+    const closed = root.classList.toggle('menu-cerrado');
+    try { localStorage.setItem('menu-cerrado', closed ? '1' : '0'); } catch (e) {}
+    sync();
+  }
+
+  hamburger.addEventListener('click', () => {
+    if (!mobile.matches) return toggleDesktop();
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+  });
   overlay.addEventListener('click', () => closeSidebar());
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && sidebar.classList.contains('open')) closeSidebar({ returnFocus: true });
+    if (e.key === 'Escape' && mobile.matches && sidebar.classList.contains('open')) closeSidebar({ returnFocus: true });
   });
 
-  sidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', () => closeSidebar()));
+  sidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    if (mobile.matches) closeSidebar();
+  }));
 
   // Si la ventana pasa de móvil a escritorio (o al revés), recalcular.
   mobile.addEventListener('change', () => {
-    if (!mobile.matches) closeSidebar();
-    syncInert();
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+    sync();
   });
 
   // Etiqueta en el idioma actual cuando cambian ES/EN.
-  document.addEventListener('langchange', () => setLabel(sidebar.classList.contains('open')));
+  document.addEventListener('langchange', sync);
 
-  setLabel(false);
-  syncInert();
+  sync();
 })();
 
 // ── Vitrina: trae en vivo el canal de Are.na ─────
@@ -306,6 +500,61 @@ function formatBlockDate(iso) {
     return `<span class="arena-card-kind i18n" lang="${lang}" data-es="${escHtml(es)}" data-en="${escHtml(en)}">${escHtml(lang === 'en' ? en : es)}</span>`;
   }
 
+  // El botón cubre toda la tarjeta y no se ve; su texto es solo para
+  // lectores de pantalla.
+  function moreLabel() {
+    const [es, en] = ['leer completo', 'read it all'];
+    return `<span class="sr-only i18n" data-es="${es}" data-en="${en}">${currentLang() === 'en' ? en : es}</span>`;
+  }
+
+  // Modal para leer un texto completo. <dialog> ya se encarga de cerrar
+  // con Esc, dejar el foco dentro y devolverlo al botón al cerrarse.
+  const modal = document.createElement('dialog');
+  modal.className = 'arena-modal';
+  modal.setAttribute('lang', 'es');
+  modal.innerHTML = `
+    <div class="arena-modal-inner">
+      <button type="button" class="arena-modal-close" aria-label="Cerrar" data-en-label="Close"><span aria-hidden="true">✕</span></button>
+      <div class="arena-modal-body"></div>
+    </div>`;
+  document.body.appendChild(modal);
+  const modalBody = modal.querySelector('.arena-modal-body');
+
+  modal.querySelector('.arena-modal-close').addEventListener('click', () => modal.close());
+  // Clic en el fondo oscuro (fuera de la tarjeta) también cierra
+  modal.addEventListener('click', e => { if (e.target === modal) modal.close(); });
+
+  grid.addEventListener('click', e => {
+    const btn = e.target.closest('.arena-card-more');
+    if (!btn) return;
+    const card = btn.closest('.arena-card-text');
+    const pick = sel => card.querySelector(sel)?.outerHTML || '';
+    modalBody.innerHTML =
+      pick('.arena-card-kind') + pick('.arena-card-heading') +
+      `<div class="arena-modal-text">${card.querySelector('.arena-card-title').innerHTML}</div>` +
+      pick('.arena-card-date');
+
+    const heading = modalBody.querySelector('.arena-card-heading');
+    if (heading) {
+      heading.id = 'arena-modal-title';
+      modal.setAttribute('aria-labelledby', heading.id);
+      modal.removeAttribute('aria-label');
+    } else {
+      modal.removeAttribute('aria-labelledby');
+      modal.setAttribute('aria-label', currentLang() === 'en' ? 'Text' : 'Texto');
+    }
+    modal.showModal();
+    modalBody.scrollTop = 0;
+  });
+
+  // Los textos que caben completos en la tarjeta no necesitan "leer completo"
+  function markShortTexts() {
+    grid.querySelectorAll('.arena-card-text').forEach(card => {
+      const text = card.querySelector('.arena-card-title');
+      card.classList.toggle('fits', text.scrollHeight <= text.clientHeight + 1);
+    });
+  }
+
   function blockToCard(block) {
     const title = escHtml((block.title || block.generated_title || '').trim());
     const kind = kindLabel(block.class || block.base_class || block.type || 'block');
@@ -339,9 +588,9 @@ function formatBlockDate(iso) {
       ? `<img src="${escAttr(image)}" alt="${altText}" loading="lazy">`
       : '';
 
-    // Bloque de puro texto (sin imagen, con o sin título): se muestra
-    // completo, con sus párrafos, y a todo el ancho de la vitrina para
-    // que se lea bien. Por ahora no enlaza a nada (eso se activa después).
+    // Bloque de puro texto (sin imagen, con o sin título): es una tarjeta
+    // más de la cuadrícula y solo enseña el principio; el botón "leer
+    // completo" la abre a todo el ancho para leerla con calma.
     const isFullText = !image && textHtml;
 
     if (isFullText) {
@@ -355,9 +604,10 @@ function formatBlockDate(iso) {
                 ${kind}
                 ${titleHtml}
                 <div class="arena-card-title">${textHtml}</div>
+                <button type="button" class="arena-card-more" aria-haspopup="dialog">${moreLabel()}</button>
                 ${dateHtml}
               </div>`;
-      return `<article class="arena-card arena-card-full" lang="es">${body}</article>`;
+      return `<article class="arena-card arena-card-text" lang="es">${body}</article>`;
     }
 
     let body = '';
@@ -380,7 +630,8 @@ function formatBlockDate(iso) {
     return `<a class="arena-card" lang="es" href="${escAttr(href)}" target="_blank" rel="noopener"${label}>${media}${body}${newTabHint()}</a>`;
   }
 
-  fetch(`https://api.are.na/v3/channels/${channel}/contents?per=24`)
+  // Solo los 6 más recientes: dos filas de 3 tarjetas
+  fetch(`https://api.are.na/v3/channels/${channel}/contents?per=6`)
     .then(res => {
       if (!res.ok) throw new Error('arena request failed');
       return res.json();
@@ -392,6 +643,8 @@ function formatBlockDate(iso) {
         return;
       }
       grid.innerHTML = data.map(blockToCard).join('');
+      markShortTexts();
+      if (document.fonts) document.fonts.ready.then(markShortTexts);
       announce(`se cargaron ${data.length} curiosidades`, `${data.length} curiosities loaded`);
     })
     .catch(() => {

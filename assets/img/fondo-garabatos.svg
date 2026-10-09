@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420">
+  <!-- Fondo de garabatos del sitio (mosaico que se repite).
+       Las formas no tocan las orillas para que el mosaico no se note. -->
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <!-- manchas -->
+    <path d="M30 70 C 40 40, 95 35, 120 55 C 140 72, 115 100, 80 98 C 50 96, 22 92, 30 70 Z" fill="#F2A7C8"/>
+    <path d="M45 70 Q 75 60, 108 68 M62 64 l 6 -10 M80 63 l 4 -11 M95 65 l 5 -9" stroke="#D97AA8" stroke-width="3" fill="none"/>
+    <path d="M270 300 C 285 270, 345 268, 365 292 C 380 312, 350 340, 312 336 C 282 333, 258 322, 270 300 Z" fill="#2EC5D3"/>
+    <path d="M285 305 l 70 0 M290 318 l 55 0" stroke="#1E9AA6" stroke-width="4" fill="none"/>
+    <path d="M300 40 C 330 30, 360 50, 352 78 C 345 100, 310 102, 296 82 C 286 68, 284 46, 300 40 Z" fill="#7B4FD6"/>
+
+    <!-- corona en zigzag -->
+    <path d="M150 230 L 160 195 L 175 222 L 190 188 L 203 220 L 218 192 L 224 236 Z" fill="#2E1A6E"/>
+
+    <!-- garabato en espiral -->
+    <path d="M60 300 c 0 -14, 22 -14, 22 0 c 0 12, -16 12, -16 2 c 0 -8, 10 -8, 10 0 M82 300 c 4 -12, 22 -12, 22 2 c 0 10, -14 10, -14 2" stroke="#2E1A6E" stroke-width="5" fill="none"/>
+
+    <!-- zigzags y ondas -->
+    <path d="M210 120 l 14 -14 l 14 14 l 14 -14 l 14 14 l 14 -14" stroke="#F2A7C8" stroke-width="6" fill="none"/>
+    <path d="M40 180 q 12 -12, 24 0 t 24 0 t 24 0" stroke="#2EC5D3" stroke-width="6" fill="none"/>
+    <path d="M330 170 q 10 -10, 20 0 t 20 0" stroke="#5B6EE1" stroke-width="5" fill="none"/>
+    <path d="M150 360 l 10 -12 l 10 12 l 10 -12 l 10 12" stroke="#7B4FD6" stroke-width="5" fill="none"/>
+
+    <!-- equis -->
+    <path d="M180 40 l 18 18 M198 40 l -18 18" stroke="#F2A7C8" stroke-width="6"/>
+    <path d="M240 370 l 14 14 M254 370 l -14 14" stroke="#5B6EE1" stroke-width="5"/>
+    <path d="M370 220 l 12 12 M382 220 l -12 12" stroke="#2EC5D3" stroke-width="5"/>
+
+    <!-- anillos y círculos -->
+    <circle cx="250" cy="200" r="20" stroke="#5B6EE1" stroke-width="7" fill="none"/>
+    <circle cx="250" cy="200" r="6" fill="#5B6EE1"/>
+    <circle cx="120" cy="140" r="10" stroke="#2EC5D3" stroke-width="5" fill="none"/>
+    <circle cx="160" cy="95" r="7" fill="#F2A7C8"/>
+    <circle cx="380" cy="130" r="6" fill="#2E1A6E"/>
+    <circle cx="40" cy="380" r="8" fill="#F2A7C8"/>
+    <circle cx="300" cy="235" r="5" fill="#2EC5D3"/>
+    <circle cx="110" cy="250" r="5" fill="#7B4FD6"/>
+
+    <!-- triángulos -->
+    <path d="M100 360 L 125 320 L 140 365 Z" stroke="#2EC5D3" stroke-width="5" fill="none"/>
+    <path d="M360 360 L 385 380 L 352 392 Z" fill="#F2A7C8"/>
+    <path d="M230 150 L 244 168 L 222 172 Z" fill="#7B4FD6"/>
+
+    <!-- hoja / helecho -->
+    <path d="M330 250 L 260 250 M318 250 l 12 -12 M318 250 l 12 12 M300 250 l 12 -12 M300 250 l 12 12 M282 250 l 12 -12 M282 250 l 12 12" stroke="#5B6EE1" stroke-width="6" fill="none"/>
+
+    <!-- estrellitas -->
+    <path d="M70 230 l 0 16 M62 238 l 16 0 M64 232 l 12 12 M76 232 l -12 12" stroke="#2E1A6E" stroke-width="3"/>
+    <path d="M370 30 l 0 14 M363 37 l 14 0" stroke="#7B4FD6" stroke-width="3"/>
+
+    <!-- palitos y guiones -->
+    <path d="M200 280 l 22 -8 M206 292 l 22 -8" stroke="#2EC5D3" stroke-width="5"/>
+    <path d="M30 130 l 0 20" stroke="#5B6EE1" stroke-width="6"/>
+    <path d="M180 310 q 8 6, 18 2" stroke="#F2A7C8" stroke-width="5" fill="none"/>
+  </g>
+</svg>

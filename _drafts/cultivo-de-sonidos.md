@@ -18,7 +18,7 @@ tags: [extranos-delirios-de-jengibre]
   <iframe src="https://www.youtube.com/embed/zxpVXASHC0Q" title="Delirios entre sueños — Extraños delirios de jengibre" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
-*Delirios entre sueños*, de **Extraños delirios de jengibre**. También puedes seguir el resto de piezas en el [archivo de Are.na](https://www.are.na/vane-emy-xselfrzidfa/extranos-delirios-de-gengibre).
+*Delirios entre sueños*, de **Extraños delirios de jengibre**. También puedes seguir el resto de piezas en el [archivo de Are.na](https://www.are.na/vane-emy-xselfrzidfa/extranos-delirios-de-jengibre).
 
 ---
 

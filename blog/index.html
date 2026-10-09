@@ -7,16 +7,29 @@ title: Memorias
     <h1 class="room-title reveal i18n" data-en="<em>Memories</em>"><em>Memorias</em></h1>
     <p class="room-text reveal i18n" data-en="Words, learnings, and notes from the worlds I'm exploring.">Palabras, aprendizajes y apuntes de los mundos que voy explorando.</p>
 
-    {% if site.posts.size > 0 %}
-    <div class="blog-list" lang="es">
-      {% for post in site.posts %}
-      <article class="blog-entry reveal">
-        <time class="entry-date" datetime="{{ post.date | date: '%Y-%m-%d' }}">{% include fecha-es.html fecha=post.date %}</time>
-        <a class="entry-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
-        <p class="entry-excerpt">{{ post.excerpt | strip_html | split: '.' | first | append: '.' }}</p>
-      </article>
+    {% comment %}
+      Las tarjetas salen de _data/substack.json. Para que aparezca un texto
+      nuevo de Substack, corre ./bin/update-substack.py
+    {% endcomment %}
+    {% assign memorias = site.data.substack %}
+    {% if memorias and memorias.size > 0 %}
+    <div class="arena-grid memorias-grid reveal" lang="es">
+      {% for m in memorias %}
+      <a class="arena-card memoria-card" href="{{ m.url }}" target="_blank" rel="noopener">
+        {% if m.cover != "" %}
+        <img src="{{ m.cover }}" alt="" loading="lazy">
+        {% else %}
+        <span class="memoria-cover" aria-hidden="true">{{ m.description | truncate: 120 }}</span>
+        {% endif %}
+        <span class="arena-card-body">
+          <span class="arena-card-kind"><time datetime="{{ m.date }}">{% include fecha-es.html fecha=m.date %}</time></span>
+          <span class="memoria-title">{{ m.title }}</span>
+          {% if m.subtitle != "" %}<span class="arena-card-title">{{ m.subtitle }}</span>{% endif %}
+        </span>
+      </a>
       {% endfor %}
     </div>
+    <a class="arena-more reveal" href="https://vanemy.substack.com/" target="_blank" rel="noopener"><span class="i18n" data-en="read and subscribe on Substack">leer y suscribirme en Substack</span> <span aria-hidden="true">↗</span></a>
     {% else %}
     <div class="blog-coming reveal">
       <span class="bc-icon" aria-hidden="true">📝</span>
